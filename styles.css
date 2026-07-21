@@ -335,6 +335,7 @@ main {
 
 .detail-card p,
 .fert-card p,
+.fert-example p,
 .summary-grid p {
   color: #435047;
   font-size: 0.94rem;
@@ -347,6 +348,32 @@ main {
   border-left: 4px solid var(--sun);
   border-radius: 8px;
   background: #fffaf0;
+}
+
+.fert-examples {
+  display: grid;
+  gap: 8px;
+}
+
+.fert-example-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.fert-example {
+  min-height: 104px;
+  padding: 12px;
+  border: 1px solid rgba(47, 95, 70, 0.18);
+  border-radius: 8px;
+  background: rgba(217, 229, 210, 0.42);
+}
+
+.fert-example strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--leaf-dark);
+  font-size: 0.98rem;
 }
 
 .fert-quick {
@@ -436,6 +463,10 @@ main {
     grid-template-columns: 1fr;
   }
 
+  .fert-example-grid {
+    grid-template-columns: 1fr;
+  }
+
   .veg-button {
     grid-template-columns: 28px 1fr;
   }
@@ -472,6 +503,7 @@ main {
   }
 
   .detail-card,
+  .fert-example,
   .note-card {
     background: #182019;
   }

@@ -124,6 +124,89 @@ const fertilizers = [
   }
 ];
 
+const fertilizerGuides = {
+  Carrot: [
+    {
+      name: "Compost",
+      how: "Mix a thin layer into the bed before sowing. Keep it gentle so roots grow clean and straight."
+    },
+    {
+      name: "Bone Meal",
+      how: "Use only if the bed needs phosphorus. Work it into the soil before sowing, not after roots form."
+    }
+  ],
+  Cucumber: [
+    {
+      name: "Compost",
+      how: "Add at planting to hold moisture and give the vines a steady base feed."
+    },
+    {
+      name: "Tomato / Vegetable Fertilizer",
+      how: "Start when vines run or first flowers appear. Feed every 2 to 3 weeks at label rate."
+    }
+  ],
+  Kale: [
+    {
+      name: "Fish Emulsion",
+      how: "Use diluted as a nitrogen boost every 3 to 4 weeks while harvesting leaves."
+    },
+    {
+      name: "Compost",
+      how: "Side-dress around the plant base and water it in for slower, steadier feeding."
+    }
+  ],
+  Lettuce: [
+    {
+      name: "Worm Castings",
+      how: "Scratch lightly into the top soil or add around seedlings for a gentle leaf boost."
+    },
+    {
+      name: "Fish Emulsion",
+      how: "Use half-strength only if growth stalls or leaves look pale."
+    }
+  ],
+  Pepper: [
+    {
+      name: "Kelp",
+      how: "Use after transplanting or during heat stress to support recovery."
+    },
+    {
+      name: "Tomato / Vegetable Fertilizer",
+      how: "Use lightly once buds form. Avoid high-nitrogen feeds after flowering starts."
+    }
+  ],
+  Radish: [
+    {
+      name: "Compost",
+      how: "Prepare the bed before sowing. That is usually enough for a quick crop."
+    },
+    {
+      name: "Worm Castings",
+      how: "Use a small amount in tired soil. Skip strong nitrogen fertilizers."
+    }
+  ],
+  Tomato: [
+    {
+      name: "Compost",
+      how: "Add at planting and mulch over it once the soil is warm."
+    },
+    {
+      name: "Tomato / Vegetable Fertilizer",
+      how: "Begin when first fruit sets, then feed every 2 to 3 weeks at label rate."
+    }
+  ],
+  Zucchini: [
+    {
+      name: "Compost",
+      how: "Work into the planting mound or bed before transplanting or sowing."
+    },
+    {
+      name: "Tomato / Vegetable Fertilizer",
+      how: "Feed when flowers start, then every 2 to 3 weeks while harvesting."
+    }
+  ]
+};
+
 const vegList = document.querySelector("#vegList");
 const fertList = document.querySelector("#fertList");
 const alphaStrip = document.querySelector("#alphaStrip");
@@ -155,7 +238,10 @@ function renderAlpha(items) {
 function renderVegetables() {
   const query = normalize(searchInput.value);
   const filtered = vegetables.filter((item) => {
-    const haystack = normalize(`${item.name} ${item.feeding} ${item.schedule} ${item.notes}`);
+    const examples = (fertilizerGuides[item.name] || [])
+      .map((example) => `${example.name} ${example.how}`)
+      .join(" ");
+    const haystack = normalize(`${item.name} ${item.feeding} ${item.schedule} ${item.notes} ${examples}`);
     return haystack.includes(query);
   });
 
@@ -172,6 +258,16 @@ function renderVegetables() {
       const rows = items
         .map((item) => {
           const id = item.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+          const fertilizerExamples = (fertilizerGuides[item.name] || [])
+            .map(
+              (example) => `
+                <article class="fert-example">
+                  <strong>${example.name}</strong>
+                  <p>${example.how}</p>
+                </article>
+              `
+            )
+            .join("");
           return `
             <article class="veg-item" id="${id}">
               <button class="veg-button" type="button" aria-expanded="false">
@@ -204,6 +300,12 @@ function renderVegetables() {
                 <section class="note-card">
                   <span class="detail-label">Note</span>
                   <p>${item.notes}</p>
+                </section>
+                <section class="fert-examples">
+                  <span class="detail-label">Fertilizer Examples</span>
+                  <div class="fert-example-grid">
+                    ${fertilizerExamples}
+                  </div>
                 </section>
               </div>
             </article>
