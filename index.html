@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#2f5f46" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Garden Notes" />
+    <title>Garden Notes</title>
+    <link rel="apple-touch-icon" href="./icon-192.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Pocket reference</p>
+          <h1>Garden Notes</h1>
+        </div>
+        <div class="season-chip" aria-label="Current season focus">Feed + water</div>
+      </header>
+
+      <nav class="tabs" aria-label="Garden reference sections">
+        <button class="tab is-active" type="button" data-tab="vegetables">Vegetables</button>
+        <button class="tab" type="button" data-tab="fertilizers">Fertilizers</button>
+      </nav>
+
+      <main>
+        <section class="tab-panel is-active" id="vegetables" aria-labelledby="vegetables-tab">
+          <div class="summary-band">
+            <article>
+              <span>Today</span>
+              <strong>Check soil before feeding</strong>
+            </article>
+            <article>
+              <span>Rule</span>
+              <strong>Water deep, then feed</strong>
+            </article>
+            <article>
+              <span>Heavy feeders</span>
+              <strong>Tomato, pepper, cucumber</strong>
+            </article>
+          </div>
+
+          <label class="search-wrap">
+            <span>Search</span>
+            <input id="search" type="search" placeholder="Find a vegetable" autocomplete="off" />
+          </label>
+
+          <div class="alpha-strip" id="alphaStrip" aria-label="Jump by letter"></div>
+          <div class="veg-list" id="vegList"></div>
+        </section>
+
+        <section class="tab-panel" id="fertilizers" aria-labelledby="fertilizers-tab">
+          <section class="fert-quick">
+            <h2>Quick Summary</h2>
+            <div class="summary-grid">
+              <article>
+                <span>Base</span>
+                <strong>Compost and worm castings</strong>
+                <p>Use before planting or as a light side-dress to support soil structure.</p>
+              </article>
+              <article>
+                <span>Growth</span>
+                <strong>Fish emulsion or blood meal</strong>
+                <p>Nitrogen-forward feeds for leafy growth. Go easy once fruiting starts.</p>
+              </article>
+              <article>
+                <span>Fruit</span>
+                <strong>Tomato/vegetable fertilizer</strong>
+                <p>Balanced or bloom-leaning blends for tomatoes, peppers, and cucumbers.</p>
+              </article>
+              <article>
+                <span>Stress</span>
+                <strong>Kelp meal or liquid kelp</strong>
+                <p>Useful around transplanting, heat stress, and recovery weeks.</p>
+              </article>
+            </div>
+          </section>
+
+          <div class="fert-list" id="fertList"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>
