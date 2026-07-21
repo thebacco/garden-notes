@@ -447,6 +447,88 @@ main {
   margin-bottom: 12px;
 }
 
+.reference-heading {
+  margin-top: 18px;
+}
+
+.action-triggers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.action-triggers article {
+  display: grid;
+  gap: 7px;
+  min-height: 132px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 253, 247, 0.92);
+  box-shadow: 0 8px 22px rgba(62, 55, 44, 0.08);
+}
+
+.action-triggers span {
+  color: var(--clay);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.action-triggers strong {
+  font-size: 1.02rem;
+  line-height: 1.15;
+}
+
+.action-triggers p {
+  color: #435047;
+  font-size: 0.92rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.feed-timeline {
+  display: grid;
+  gap: 10px;
+}
+
+.feed-timeline article {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 14px 14px 14px 18px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--leaf);
+  border-radius: 8px;
+  background: rgba(255, 253, 247, 0.92);
+  box-shadow: 0 8px 22px rgba(62, 55, 44, 0.08);
+}
+
+.timeline-step {
+  width: fit-content;
+  padding: 6px 9px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: var(--leaf);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.feed-timeline h3 {
+  margin: 0;
+  font-size: 1.12rem;
+  line-height: 1.15;
+}
+
+.feed-timeline p {
+  color: #435047;
+  font-size: 0.94rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
 .my-fert-list {
   display: grid;
   gap: 10px;
@@ -559,6 +641,7 @@ main {
   }
 
   .summary-band,
+  .action-triggers,
   .summary-grid,
   .fert-list {
     grid-template-columns: 1fr;
@@ -621,8 +704,10 @@ main {
   }
 
   .detail-card,
+  .action-triggers article,
   .fert-example,
   .feed-chart article,
+  .feed-timeline article,
   .fert-card,
   .my-fert-list article,
   .summary-band article,
@@ -638,12 +723,18 @@ main {
   }
 
   .detail-card p,
+  .action-triggers p,
   .fert-card p,
   .fert-example p,
   .feed-chart p,
+  .feed-timeline p,
   .my-fert-list dd,
   .summary-grid p {
     color: #dce5db;
+  }
+
+  .timeline-step {
+    color: #102015;
   }
 
   .veg-details {

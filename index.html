@@ -9,7 +9,7 @@
     <title>Garden Notes</title>
     <link rel="apple-touch-icon" href="./icon-192.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=7" />
+    <link rel="stylesheet" href="./styles.css?v=8" />
   </head>
   <body>
     <div class="app-shell">
@@ -24,7 +24,7 @@
       <nav class="tabs" aria-label="Garden reference sections">
         <button class="tab is-active" type="button" data-tab="vegetables">Vegetables</button>
         <button class="tab" type="button" data-tab="feed-chart">Feed Chart</button>
-        <button class="tab" type="button" data-tab="my-fertilizers">My Fertilizers</button>
+        <button class="tab" type="button" data-tab="my-fertilizers">When To Act</button>
         <button class="tab" type="button" data-tab="fertilizers">Fertilizers</button>
       </nav>
 
@@ -92,28 +92,98 @@
 
         <section class="tab-panel" id="my-fertilizers" aria-labelledby="my-fertilizers-tab">
           <section class="my-ferts">
-            <h2>My Fertilizers</h2>
+            <h2>Fertilizer Timeline & Triggers</h2>
+            <div class="action-triggers">
+              <article>
+                <span>If leaves need pushing</span>
+                <strong>Use Alaska Fish</strong>
+                <p>Celery, kale, or corn look pale, slow, dry-stressed, or hungry for foliage.</p>
+              </article>
+              <article>
+                <span>If vines slow down</span>
+                <strong>Use Tiger Bloom</strong>
+                <p>Zucchini or squash are flowering poorly, dropping blossoms, or production is fading.</p>
+              </article>
+              <article>
+                <span>If fruit needs finishing</span>
+                <strong>Use Farmer's Secret</strong>
+                <p>Tomatoes, eggplant, or strawberries are in late-season fruit fill and ripening mode.</p>
+              </article>
+              <article>
+                <span>If base feed is due</span>
+                <strong>Use Tomato-tone</strong>
+                <p>Containers need the mid-season slow-release top-dress and calcium support.</p>
+              </article>
+              <article>
+                <span>If roots are fed</span>
+                <strong>Do nothing</strong>
+                <p>Leeks and horseradish get one light Tomato-tone feed, then leave them alone.</p>
+              </article>
+            </div>
+            <div class="feed-timeline">
+              <article>
+                <span class="timeline-step">Now</span>
+                <h3>Base top-dress</h3>
+                <p><strong>Use:</strong> Espoma Tomato-tone</p>
+                <p><strong>Feed:</strong> Tomatoes, zucchini, squash, eggplant, strawberries, leeks, horseradish.</p>
+                <p><strong>Mix:</strong> 3 Tbsp per large container plant. Use 1.5 Tbsp for strawberries, leeks, and horseradish.</p>
+                <p><strong>How:</strong> Pull mulch back, sprinkle around drip line, keep off stems, scratch into top inch, water deeply.</p>
+              </article>
+              <article>
+                <span class="timeline-step">Every Sunday</span>
+                <h3>Greens + corn jug</h3>
+                <p><strong>Use:</strong> Alaska Fish Fertilizer QT</p>
+                <p><strong>Feed:</strong> Celery, kale, corn.</p>
+                <p><strong>Mix:</strong> 4 Tbsp into a 2-gallon watering jug.</p>
+                <p><strong>How:</strong> Pour at plant bases. Give celery enough volume that the root zone stays evenly moist.</p>
+              </article>
+              <article>
+                <span class="timeline-step">Alternate Saturdays</span>
+                <h3>Squash blossom surge</h3>
+                <p><strong>Use:</strong> FoxFarm Tiger Bloom</p>
+                <p><strong>Feed:</strong> Zucchini and squash.</p>
+                <p><strong>Mix:</strong> 4 tsp into a 2-gallon watering jug.</p>
+                <p><strong>How:</strong> Apply during morning watering every 14 days to keep flower buds setting.</p>
+              </article>
+              <article>
+                <span class="timeline-step">Mid-August onward</span>
+                <h3>Tomato finish feed</h3>
+                <p><strong>Use:</strong> Farmer's Secret Tomato Booster</p>
+                <p><strong>Feed:</strong> Tomatoes, eggplant, strawberries.</p>
+                <p><strong>Mix:</strong> 4 tsp into a 2-gallon watering jug.</p>
+                <p><strong>How:</strong> Apply every 10-14 days through late September for fruit fill, ripening, and flavor.</p>
+              </article>
+              <article>
+                <span class="timeline-step">After base feed</span>
+                <h3>Leave these alone</h3>
+                <p><strong>Feed:</strong> Leeks and horseradish.</p>
+                <p><strong>Rule:</strong> One light Tomato-tone top-dress now, then no more feeding.</p>
+                <p><strong>Why:</strong> Overfeeding can push soft growth, splitting, or root problems.</p>
+              </article>
+            </div>
+
+            <h2 class="reference-heading">Product Reference</h2>
             <div class="my-fert-list">
               <article>
                 <div>
                   <div class="fert-card-head">
                     <span class="chart-role">Tomato booster | 3-8-7</span>
-                    <span class="crop-list">Tomatoes, flowering peppers</span>
+                    <span class="crop-list">Tomatoes, eggplant, strawberries</span>
                   </div>
                   <h3>Farmer's Secret Tomato Booster</h3>
                 </div>
                 <dl>
                   <div>
                     <dt>Use on</dt>
-                    <dd>Tomatoes first. Also reasonable for fruiting peppers once they are flowering.</dd>
+                    <dd>Tomatoes, eggplant, and strawberries during late-season fruit fill.</dd>
                   </div>
                   <div>
                     <dt>When</dt>
-                    <dd>Weekly during the growing season, especially once plants are setting flowers and fruit.</dd>
+                    <dd>Starting mid-August, every 10-14 days through late September.</dd>
                   </div>
                   <div>
                     <dt>How</dt>
-                    <dd>Mix 2 tsp per gallon of water. Apply as a soil drench around the root zone.</dd>
+                    <dd>Mix 4 tsp into a 2-gallon watering jug. Apply as a soil drench around the root zone.</dd>
                   </div>
                   <div>
                     <dt>Don't</dt>
@@ -125,22 +195,22 @@
                 <div>
                   <div class="fert-card-head">
                     <span class="chart-role">Nitrogen | 5-1-1</span>
-                    <span class="crop-list">Kale, lettuce, young veggies</span>
+                    <span class="crop-list">Celery, kale, corn</span>
                   </div>
                   <h3>Alaska Fish Fertilizer QT</h3>
                 </div>
                 <dl>
                   <div>
                     <dt>Use on</dt>
-                    <dd>Leafy greens, young plants, vegetables needing leaf growth, and pale/stalled plants.</dd>
+                    <dd>Celery, kale, and corn when they need steady nitrogen and moisture.</dd>
                   </div>
                   <div>
                     <dt>When</dt>
-                    <dd>Every 3 weeks during active growth. Use less once tomatoes and peppers start fruiting.</dd>
+                    <dd>Every Sunday during active growth.</dd>
                   </div>
                   <div>
                     <dt>How</dt>
-                    <dd>Shake well. For vegetables, mix 2 Tbsp per gallon of water over about 25 sq ft of soil. For root vegetables, use 1 Tbsp per gallon.</dd>
+                    <dd>Shake well. Mix 4 Tbsp into a 2-gallon watering jug and pour at plant bases.</dd>
                   </div>
                   <div>
                     <dt>Don't</dt>
@@ -152,22 +222,22 @@
                 <div>
                   <div class="fert-card-head">
                     <span class="chart-role">Slow organic | 3-4-6</span>
-                    <span class="crop-list">Tomatoes, peppers, squash, melons</span>
+                    <span class="crop-list">Tomatoes, squash, eggplant, strawberries, leeks</span>
                   </div>
                   <h3>Espoma Tomato-tone</h3>
                 </div>
                 <dl>
                   <div>
                     <dt>Use on</dt>
-                    <dd>Tomatoes, peppers, squash, melons, and other fruiting crops.</dd>
+                    <dd>Tomatoes, zucchini, squash, eggplant, strawberries, leeks, and horseradish as the base feed.</dd>
                   </div>
                   <div>
                     <dt>When</dt>
-                    <dd>At planting, again 10-14 days after plants establish, then twice monthly May through August.</dd>
+                    <dd>Now as a one-time mid-season top-dress.</dd>
                   </div>
                   <div>
                     <dt>How</dt>
-                    <dd>Single plants: mix 3 Tbsp into soil at planting. Feeding: apply 3 Tbsp per plant in a narrow band at least 3 inches from the stem, then water thoroughly.</dd>
+                    <dd>Use 3 Tbsp per large container plant, or 1.5 Tbsp for strawberries, leeks, and horseradish. Keep at least 3 inches from stems and water thoroughly.</dd>
                   </div>
                   <div>
                     <dt>Don't</dt>
@@ -179,22 +249,22 @@
                 <div>
                   <div class="fert-card-head">
                     <span class="chart-role">Bloom liquid | 2-8-4</span>
-                    <span class="crop-list">Tomatoes, peppers, cucumbers, zucchini</span>
+                    <span class="crop-list">Zucchini, squash</span>
                   </div>
                   <h3>FoxFarm Tiger Bloom</h3>
                 </div>
                 <dl>
                   <div>
                     <dt>Use on</dt>
-                    <dd>Fruiting and flowering plants that need bloom/fruit support, especially once flowers appear.</dd>
+                    <dd>Zucchini and squash that need steady flower and bud production.</dd>
                   </div>
                   <div>
                     <dt>When</dt>
-                    <dd>From first signs of flowering through harvest. General use is every other watering.</dd>
+                    <dd>Alternate Saturdays, every 14 days, during morning watering.</dd>
                   </div>
                   <div>
                     <dt>How</dt>
-                    <dd>General feeding: mix 2-3 tsp per gallon of water. Heavy feeding: 4 tsp per gallon. For foliar feeding, use 1/2 tsp per gallon every other week.</dd>
+                    <dd>Mix 4 tsp into a 2-gallon watering jug and apply at the base.</dd>
                   </div>
                   <div>
                     <dt>Don't</dt>
@@ -238,6 +308,6 @@
       </main>
     </div>
 
-    <script src="./app.js?v=7" defer></script>
+    <script src="./app.js?v=8" defer></script>
   </body>
 </html>
