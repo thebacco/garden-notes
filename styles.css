@@ -543,8 +543,29 @@ main {
   .detail-card,
   .fert-example,
   .feed-chart article,
+  .fert-card,
+  .summary-band article,
+  .summary-grid article,
+  .veg-item,
   .note-card {
     background: #182019;
+  }
+
+  .tabs,
+  .search-wrap input {
+    background: #182019;
+  }
+
+  .detail-card p,
+  .fert-card p,
+  .fert-example p,
+  .feed-chart p,
+  .summary-grid p {
+    color: #dce5db;
+  }
+
+  .veg-details {
+    background: #151b16;
   }
 
   .feed-pill {
