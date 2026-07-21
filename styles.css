@@ -99,7 +99,7 @@ h2 {
   top: 0;
   z-index: 5;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   padding: 7px;
   border: 1px solid var(--line);
@@ -405,6 +405,44 @@ main {
   gap: 10px;
 }
 
+.feed-chart {
+  display: grid;
+  gap: 10px;
+}
+
+.feed-chart article {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 253, 247, 0.9);
+  box-shadow: 0 8px 22px rgba(62, 55, 44, 0.08);
+}
+
+.chart-name {
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 950;
+}
+
+.chart-role {
+  width: fit-content;
+  padding: 6px 9px;
+  border-radius: 999px;
+  color: var(--leaf-dark);
+  background: var(--sage);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.feed-chart p {
+  color: #435047;
+  font-size: 0.94rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
 .fert-card {
   min-height: 190px;
   padding: 14px;
@@ -504,6 +542,7 @@ main {
 
   .detail-card,
   .fert-example,
+  .feed-chart article,
   .note-card {
     background: #182019;
   }
