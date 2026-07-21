@@ -520,6 +520,14 @@ main {
   background: rgba(217, 229, 210, 0.32);
 }
 
+.table-note {
+  display: inline-block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
 .my-ferts h2 {
   margin-bottom: 12px;
 }
@@ -808,6 +816,10 @@ main {
 
   .garden-table td {
     color: #dce5db;
+  }
+
+  .table-note {
+    color: #b7c0b8;
   }
 
   .tabs,
