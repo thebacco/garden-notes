@@ -528,6 +528,47 @@ main {
   font-weight: 800;
 }
 
+.definition-block {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 253, 247, 0.92);
+  box-shadow: 0 8px 22px rgba(62, 55, 44, 0.08);
+}
+
+.definition-block h3 {
+  margin: 0;
+  font-size: 1.14rem;
+}
+
+.definition-block dl {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.definition-block div {
+  display: grid;
+  gap: 4px;
+}
+
+.definition-block dt {
+  color: var(--leaf-dark);
+  font-size: 0.92rem;
+  font-weight: 950;
+}
+
+.definition-block dd {
+  margin: 0;
+  color: #435047;
+  font-size: 0.94rem;
+  font-weight: 650;
+  line-height: 1.42;
+}
+
 .my-ferts h2 {
   margin-bottom: 12px;
 }
@@ -806,6 +847,10 @@ main {
     background: #182019;
   }
 
+  .definition-block {
+    background: #182019;
+  }
+
   .garden-table tbody tr:nth-child(even) {
     background: #202920;
   }
@@ -815,6 +860,10 @@ main {
   }
 
   .garden-table td {
+    color: #dce5db;
+  }
+
+  .definition-block dd {
     color: #dce5db;
   }
 
