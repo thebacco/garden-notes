@@ -9,7 +9,7 @@
     <title>Garden Notes</title>
     <link rel="apple-touch-icon" href="./icon-192.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=8" />
+    <link rel="stylesheet" href="./styles.css?v=9" />
   </head>
   <body>
     <div class="app-shell">
@@ -56,36 +56,140 @@
 
         <section class="tab-panel" id="feed-chart" aria-labelledby="feed-chart-tab">
           <section class="fert-quick">
-            <h2>Fertilizer Chart</h2>
-            <div class="feed-chart">
-              <article>
-                <span class="chart-name">Compost / worm castings</span>
-                <span class="chart-role">Base soil food</span>
-                <p><strong>Use for:</strong> Most vegetables, seedlings, containers, tired soil.</p>
-                <p><strong>When:</strong> Before planting, at transplanting, or as a light side-dress.</p>
-                <p><strong>How:</strong> Mix compost into the bed. Scratch worm castings into the top soil and water in.</p>
-              </article>
-              <article>
-                <span class="chart-name">Fish emulsion</span>
-                <span class="chart-role">Nitrogen / leafy growth</span>
-                <p><strong>Use for:</strong> Kale, lettuce, young plants, pale leaves, slow leafy growth.</p>
-                <p><strong>When:</strong> Every 2 to 4 weeks during active leaf growth.</p>
-                <p><strong>How:</strong> Dilute with water. Use half-strength for tender plants. Stop going heavy once fruiting starts.</p>
-              </article>
-              <article>
-                <span class="chart-name">Kelp</span>
-                <span class="chart-role">Stress support</span>
-                <p><strong>Use for:</strong> Transplants, peppers, tomatoes, heat-stressed plants.</p>
-                <p><strong>When:</strong> After transplanting, during heat swings, or when plants need recovery support.</p>
-                <p><strong>How:</strong> Dilute liquid kelp or lightly apply meal. Treat it as support, not the main food.</p>
-              </article>
-              <article>
-                <span class="chart-name">Tomato / vegetable fertilizer</span>
-                <span class="chart-role">Flowers and fruit</span>
-                <p><strong>Use for:</strong> Tomatoes, peppers, cucumbers, zucchini, other heavy fruiting crops.</p>
-                <p><strong>When:</strong> At first flowers or fruit set, then every 2 to 3 weeks while producing.</p>
-                <p><strong>How:</strong> Apply at label rate around the drip line and water in. Avoid piling it against stems.</p>
-              </article>
+            <h2>Feed Chart</h2>
+            <div class="chart-block">
+              <div class="chart-title-row">
+                <h3>Nutritional Matrix</h3>
+                <span>What each crop type needs</span>
+              </div>
+              <div class="table-scroll" tabindex="0">
+                <table class="garden-table garden-matrix-table">
+                  <thead>
+                    <tr>
+                      <th>Crop Type</th>
+                      <th>Target Plants</th>
+                      <th>Primary Nutritional Need</th>
+                      <th>Risk Factors / Pitfalls</th>
+                      <th>Assigned Products</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Fruiting</strong></td>
+                      <td>Tomatoes, Eggplant, Strawberries</td>
+                      <td>Low N, High P &amp; K, High Calcium (Ca &gt;= 8%)</td>
+                      <td>Blossom-end rot from calcium deficit; excess N causes rank leaf growth instead of ripening.</td>
+                      <td>Espoma Tomato-Tone + Farmer's Secret Booster</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Fruiting</strong></td>
+                      <td>Zucchini, Squash</td>
+                      <td>High Phosphorus (P &gt;= 8%), Moderate Potassium</td>
+                      <td>Vines petering out mid-season; loss of female flower production.</td>
+                      <td>Espoma Tomato-Tone + FoxFarm Tiger Bloom</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Greens &amp; Stalks</strong></td>
+                      <td>Celery, Kale, Corn</td>
+                      <td>High Nitrogen (N = 5), High Water Volume</td>
+                      <td>Celery: stringy/bitter stalks, blackheart. Kale: premature bolting. Corn: poor ear fill.</td>
+                      <td>Alaska Fish Emulsion (+ Tomato-Tone for celery calcium)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Roots &amp; Bulbs</strong></td>
+                      <td>Leeks, Horseradish</td>
+                      <td>Balanced organic base, low-maintenance P-K</td>
+                      <td>Over-fertilization causing soft rot; root splitting from excess liquid inputs.</td>
+                      <td>Espoma Tomato-Tone (single soil application)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="chart-block">
+              <div class="chart-title-row">
+                <h3>Master Schedule</h3>
+                <span>What to apply and when</span>
+              </div>
+              <div class="table-scroll" tabindex="0">
+                <table class="garden-table garden-schedule-table">
+                  <thead>
+                    <tr>
+                      <th>Plant Variety</th>
+                      <th>Primary Product</th>
+                      <th>Application Rate</th>
+                      <th>Timing &amp; Frequency</th>
+                      <th>Operational Focus</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Tomatoes</strong></td>
+                      <td>Tomato-Tone<br>Farmer's Secret</td>
+                      <td>3 tbsp in soil<br>4 tsp per 2-gal jug</td>
+                      <td>Immediate soil feed<br>Bi-weekly starting mid-Aug</td>
+                      <td>Prevent rot with calcium; boost sugar and ripening in late summer.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Zucchini &amp; Squash</strong></td>
+                      <td>Tomato-Tone<br>Tiger Bloom</td>
+                      <td>3 tbsp in soil<br>4 tsp per 2-gal jug</td>
+                      <td>Immediate soil feed<br>Bi-weekly now</td>
+                      <td>Maintain continuous female flowering; prevent vine exhaustion.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Celery</strong></td>
+                      <td>Fish Emulsion</td>
+                      <td>4 tbsp per 2-gal jug</td>
+                      <td>Weekly</td>
+                      <td>High nitrogen for crisp stalks; constant moisture is non-negotiable.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Kale</strong></td>
+                      <td>Fish Emulsion</td>
+                      <td>4 tbsp per 2-gal jug</td>
+                      <td>Weekly</td>
+                      <td>Promote lush leaf production; prevent early bolting/flowering.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Corn</strong></td>
+                      <td>Fish Emulsion</td>
+                      <td>4 tbsp per 2-gal jug</td>
+                      <td>Weekly</td>
+                      <td>Feed heavy nitrogen demands at base to fill out kernel ears.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Eggplant</strong></td>
+                      <td>Tomato-Tone<br>Farmer's Secret</td>
+                      <td>3 tbsp in soil<br>4 tsp per 2-gal jug</td>
+                      <td>Immediate soil feed<br>Bi-weekly starting mid-Aug</td>
+                      <td>Follows tomato protocol; maintains skin gloss and fruit wall density.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Strawberries</strong></td>
+                      <td>Tomato-Tone<br>Farmer's Secret</td>
+                      <td>1.5 tbsp in soil<br>4 tsp per 2-gal jug</td>
+                      <td>Immediate soil feed<br>Bi-weekly starting mid-Aug</td>
+                      <td>Potassium drives sweetness into late berry flushes.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Leeks</strong></td>
+                      <td>Tomato-Tone</td>
+                      <td>1.5 tbsp in soil</td>
+                      <td>Immediate single feed</td>
+                      <td>Gentle organic base feed for slow, steady subterranean development.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Horseradish</strong></td>
+                      <td>Tomato-Tone</td>
+                      <td>1.5 tbsp in soil</td>
+                      <td>Immediate single feed</td>
+                      <td>Low-maintenance crop; feed once and allow natural seasonal build.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </section>
         </section>
@@ -308,6 +412,6 @@
       </main>
     </div>
 
-    <script src="./app.js?v=8" defer></script>
+    <script src="./app.js?v=9" defer></script>
   </body>
 </html>

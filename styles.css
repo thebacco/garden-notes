@@ -443,6 +443,83 @@ main {
   line-height: 1.4;
 }
 
+.chart-block {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.chart-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.chart-title-row h3 {
+  margin: 0;
+  font-size: 1.14rem;
+}
+
+.chart-title-row span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 253, 247, 0.92);
+  box-shadow: 0 8px 22px rgba(62, 55, 44, 0.08);
+}
+
+.garden-table {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: collapse;
+}
+
+.garden-table th,
+.garden-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 0.9rem;
+  line-height: 1.35;
+  text-align: left;
+  vertical-align: top;
+}
+
+.garden-table th {
+  position: sticky;
+  top: 0;
+  color: #ffffff;
+  background: var(--leaf);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.garden-table td:last-child,
+.garden-table th:last-child {
+  border-right: 0;
+}
+
+.garden-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.garden-table tbody tr:nth-child(even) {
+  background: rgba(217, 229, 210, 0.32);
+}
+
 .my-ferts h2 {
   margin-bottom: 12px;
 }
@@ -715,6 +792,22 @@ main {
   .veg-item,
   .note-card {
     background: #182019;
+  }
+
+  .table-scroll {
+    background: #182019;
+  }
+
+  .garden-table tbody tr:nth-child(even) {
+    background: #202920;
+  }
+
+  .garden-table th {
+    color: #102015;
+  }
+
+  .garden-table td {
+    color: #dce5db;
   }
 
   .tabs,
