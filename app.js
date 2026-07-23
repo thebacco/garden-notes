@@ -224,6 +224,7 @@ const FEED_LOG_KEY = "gardenFeedLogV1";
 const CROP_LOG_KEY = "gardenCropFeedLogV1";
 const CROP_OPEN_KEY = "gardenCropOpenV1";
 const CROP_ORDER_KEY = "gardenCropOrderV1";
+const CROP_PHASE_KEY = "gardenCropPhaseV1";
 const feedProtocols = {
   tomatoTone: {
     label: "Tomato-tone",
@@ -247,12 +248,438 @@ const feedProtocols = {
   }
 };
 
+const cropPhaseSets = {
+  tomatoes: [
+    {
+      id: "transplant",
+      label: "Transplant establishment",
+      looks: "Recently planted or recently stressed; new leaves are just starting, and the root system is not fully driving top growth.",
+      feed: "Water discipline matters more than food. Use only a gentle Tomato-tone base feed if the container was not already amended.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "vegetative",
+      label: "Vegetative canopy build",
+      looks: "Rapid stems and leaves, larger canopy, no open flower clusters yet or only the first buds forming.",
+      feed: "Moderate base nutrition is fine. Avoid repeated nitrogen pushes because they can delay flowering and fruiting.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "flowering",
+      label: "Flowering and fruit set",
+      looks: "Yellow flower clusters are open; after pollination, tiny green fruit remain where petals dropped.",
+      feed: "Hold moisture steady and avoid high-N feeding. Tomato-tone is the main move if base fertility is due.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "fruit-fill",
+      label: "Green fruit expansion",
+      looks: "Fruit are set and sizing up but still mostly green. Blossom-end rot risk shows on fast-expanding fruit.",
+      feed: "Prioritize steady water for calcium transport. Use Tomato-tone if base feed is due; do not chase foliage growth.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "ripening",
+      label: "Ripening finish",
+      looks: "Fruit show color break, blush, softening, or clusters close to harvest.",
+      feed: "Shift to low-N, K-forward support. Farmer's Secret fits here every 10-14 days if the plant is still actively producing.",
+      product: "Farmer's Secret Tomato Booster"
+    },
+    {
+      id: "senescence",
+      label: "Late-season senescence",
+      looks: "Older leaves yellow, nights cool, disease pressure rises, and new flowers are unlikely to finish.",
+      feed: "Stop pushing new growth. Harvest, water evenly, remove diseased foliage, and feed only if healthy fruit still need finishing.",
+      product: "Farmer's Secret Tomato Booster"
+    }
+  ],
+  cucurbits: [
+    {
+      id: "establishment",
+      label: "Establishment",
+      looks: "Seedlings or transplants are rooted but not yet running; leaves are small to medium and growth is still organizing.",
+      feed: "Use compost or Tomato-tone as the base. Keep roots evenly moist and warm.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "vegetative-vining",
+      label: "Vegetative vine build",
+      looks: "Large leaves expand quickly, stems run or mound out, and the plant is building energy before heavy flowering.",
+      feed: "Base feed is useful here. Avoid letting the plant dry hard because large leaves pull water fast.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "male-bloom",
+      label: "Early male bloom",
+      looks: "Many flowers appear on thin stems with no swollen ovary behind them; female flowers are absent or rare.",
+      feed: "Do not panic-feed. Male flowers commonly precede female flowers. Maintain water and wait for female bloom.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "female-fruit-set",
+      label: "Female bloom and fruit set",
+      looks: "Female flowers show a tiny zucchini or squash ovary behind the blossom. Bees need to move pollen in the morning window.",
+      feed: "Tiger Bloom can support reproductive demand, but pollination and water are just as important as fertilizer.",
+      product: "FoxFarm Tiger Bloom"
+    },
+    {
+      id: "production",
+      label: "Harvest production",
+      looks: "New fruit are setting while older fruit size rapidly. Missed oversized fruit slow the plant down.",
+      feed: "Use Tiger Bloom every 14 days during active production. Pick frequently and water deeply at the base.",
+      product: "FoxFarm Tiger Bloom"
+    },
+    {
+      id: "decline",
+      label: "Decline or pest stress",
+      looks: "Leaves yellow, vines wilt beyond afternoon flagging, stems weaken, or powdery mildew/pest damage is obvious.",
+      feed: "Do not try to fertilize through collapse. Remove bad fruit, keep water steady, and feed only if new healthy growth remains.",
+      product: "FoxFarm Tiger Bloom"
+    }
+  ],
+  celery: [
+    {
+      id: "establishment",
+      label: "Transplant establishment",
+      looks: "Small plants are settling in; center leaves are green but stalks are still thin.",
+      feed: "Keep moisture consistent. Use fish lightly only after roots are active and new growth is visible.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "vegetative",
+      label: "Vegetative rosette",
+      looks: "Leaf canopy expands from the crown, with many upright petioles but little stalk thickness.",
+      feed: "Fish emulsion is appropriate while growth is actively vegetative. Do not let the root zone dry out.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "petiole-expansion",
+      label: "Petiole expansion",
+      looks: "Stalks thicken and lengthen; the usable celery ribs are forming.",
+      feed: "Weekly fish plus steady water. Moisture stress can make stalks stringy or contribute to blackheart conditions.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "harvest",
+      label: "Harvest hold",
+      looks: "Stalks are near usable size and the crown is still tight, with no tall flower stalk.",
+      feed: "Keep water even. Feed lightly only if color fades or growth stalls.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "bolting",
+      label: "Bolting stress",
+      looks: "A tall central flower stalk starts rising, texture toughens, or bitterness increases.",
+      feed: "Stop pushing fertilizer. Harvest what is usable and focus on water and shade stress reduction.",
+      product: "Alaska Fish Fertilizer QT"
+    }
+  ],
+  kale: [
+    {
+      id: "seedling",
+      label: "Seedling establishment",
+      looks: "Small plants have a few true leaves and shallow roots.",
+      feed: "Keep soil evenly moist. Use fish only at reduced strength if leaves are pale.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "vegetative",
+      label: "Vegetative leaf build",
+      looks: "Center leaves keep unfolding and outer leaves reach harvest size.",
+      feed: "Fish emulsion supports leaf production. Harvest outer leaves without cutting the growth point.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "harvest-regrowth",
+      label: "Cut-and-come-again harvest",
+      looks: "You are taking outer leaves and the center keeps producing new leaves.",
+      feed: "Use fish every 2-4 weeks if growth is active. Water stress makes leaves tougher.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "heat-stress",
+      label: "Heat stress or bolting",
+      looks: "Leaves get tougher, growth narrows, or a central flower stalk begins forming.",
+      feed: "Do not push nitrogen hard. Harvest usable leaves, shade if possible, and wait for cooler regrowth.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "cool-regrowth",
+      label: "Cool-season regrowth",
+      looks: "After heat eases, new tender leaves resume from the crown.",
+      feed: "A light fish feed can restart leaf production if the plant is healthy.",
+      product: "Alaska Fish Fertilizer QT"
+    }
+  ],
+  corn: [
+    {
+      id: "seedling",
+      label: "Seedling",
+      looks: "Short grass-like plants with a few leaves; roots are still shallow.",
+      feed: "Keep moisture even. Wait for stronger vegetative demand before pushing hard nitrogen.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "rapid-vegetative",
+      label: "Rapid vegetative growth",
+      looks: "Plants stretch fast, leaves widen, and stalks thicken before tassels appear.",
+      feed: "This is the main nitrogen-demand phase. Fish emulsion fits here if the plants are actively growing.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "tasseling-silking",
+      label: "Tasseling and silking",
+      looks: "Tassels shed pollen from the top while silks emerge from ears.",
+      feed: "Water is critical for pollination and kernel set. Feed only if color or vigor shows nitrogen need.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "ear-fill",
+      label: "Kernel ear fill",
+      looks: "Silks brown down, ears swell, and kernels move from watery to milky.",
+      feed: "Maintain moisture and modest nitrogen support if leaves are pale. Avoid drought during fill.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "maturity",
+      label: "Maturity",
+      looks: "Husks dry, kernels firm, or the eating window is basically done.",
+      feed: "Stop feeding. Fertilizer will not fix mature ears.",
+      product: "Alaska Fish Fertilizer QT"
+    }
+  ],
+  eggplant: [
+    {
+      id: "establishment",
+      label: "Transplant establishment",
+      looks: "Plant is settling in with limited new growth and possible transplant pause.",
+      feed: "Water evenly and keep roots warm. Use Tomato-tone only as a gentle base feed.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "vegetative",
+      label: "Vegetative canopy build",
+      looks: "Broad leaves and branching increase; purple or white flowers are not open yet.",
+      feed: "Moderate base fertility is enough. Avoid excess N that makes leaves instead of fruit.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "flowering",
+      label: "Flowering and fruit set",
+      looks: "Star-shaped flowers open; tiny fruit remain after successful set.",
+      feed: "Keep moisture steady. Tomato-tone supports base fertility while the plant starts fruiting.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "fruit-fill",
+      label: "Fruit expansion",
+      looks: "Fruit enlarge and stay glossy; skin should remain firm and shiny.",
+      feed: "Use steady water and low-N fruit support. Farmer's Secret can help active fruit fill.",
+      product: "Farmer's Secret Tomato Booster"
+    },
+    {
+      id: "harvest",
+      label: "Harvest and continued set",
+      looks: "Fruit are harvestable while new flowers or small fruit continue forming.",
+      feed: "Keep a light fruiting rhythm. Harvest before fruit dulls or seeds harden.",
+      product: "Farmer's Secret Tomato Booster"
+    },
+    {
+      id: "senescence",
+      label: "Late-season senescence",
+      looks: "Leaves yellow, flowering slows, and nights or disease pressure limit new fruit.",
+      feed: "Stop pushing new growth unless healthy fruit are still sizing.",
+      product: "Farmer's Secret Tomato Booster"
+    }
+  ],
+  strawberries: [
+    {
+      id: "establishment",
+      label: "Crown establishment",
+      looks: "Crowns are rooting, new leaves are forming, and runners may be limited.",
+      feed: "Use light base fertility only. Keep crowns at the correct height and do not bury them.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "vegetative-runners",
+      label: "Vegetative runner growth",
+      looks: "Leaves and runners are the main growth; flowers or berries are limited.",
+      feed: "Do not use fruit booster here. If growth is weak, use gentle organic base feed rather than heavy bloom food.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "flowering",
+      label: "Flowering",
+      looks: "White flowers open above the crown; pollination quality sets berry shape.",
+      feed: "Avoid heavy nitrogen. Keep water steady and leave flowers accessible to pollinators.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "green-fruit",
+      label: "Green fruit fill",
+      looks: "Small green berries enlarge; poor pollination can create lumpy or nubby shape.",
+      feed: "Use very light fruit support only if plants are actively carrying berries. Do not overfeed N.",
+      product: "Farmer's Secret Tomato Booster"
+    },
+    {
+      id: "ripe-harvest",
+      label: "Ripe harvest flush",
+      looks: "Berries color, soften, and ripen in waves.",
+      feed: "Prioritize water consistency and picking. Use booster sparingly if another flush is still forming.",
+      product: "Farmer's Secret Tomato Booster"
+    },
+    {
+      id: "post-harvest",
+      label: "Post-harvest reset",
+      looks: "Fruit flush slows and the plant returns to leaves, crowns, and runners.",
+      feed: "Stop fruit booster. Light organic nitrogen or compost is the usual direction if runner/crown growth is weak.",
+      product: "Espoma Tomato-tone"
+    }
+  ],
+  leeks: [
+    {
+      id: "establishment",
+      label: "Transplant establishment",
+      looks: "Thin upright leaves are rooting in and may pause after transplant.",
+      feed: "Water steadily. Wait until roots are established before adding much food.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "leaf-build",
+      label: "Leaf blade build",
+      looks: "Blue-green strap leaves increase and the plant gains photosynthetic area.",
+      feed: "A light base feed is useful if growth is pale or slow.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "shaft-expansion",
+      label: "Pseudostem shaft expansion",
+      looks: "The white/light shaft thickens as leaf bases stack; soil or mulch may be used for blanching.",
+      feed: "Keep fertility steady but not lush. One light Tomato-tone feed is enough for your plan.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "maturation",
+      label: "Maturation",
+      looks: "Shaft diameter is usable and growth slows.",
+      feed: "Do not keep feeding. Maintain moisture and harvest as needed.",
+      product: "Espoma Tomato-tone"
+    }
+  ],
+  horseradish: [
+    {
+      id: "establishment",
+      label: "Root piece establishment",
+      looks: "Leaves emerge from the crown/root cutting and root anchoring begins.",
+      feed: "A light base feed is enough. Avoid wet, rich conditions that drive soft growth.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "leaf-canopy",
+      label: "Leaf canopy",
+      looks: "Large coarse leaves build a strong canopy above the crown.",
+      feed: "If you have not fed once, Tomato-tone can be used lightly now.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "root-bulking",
+      label: "Storage-root bulking",
+      looks: "Top growth may look stable while the harvest root thickens underground.",
+      feed: "Leave it alone. Repeated liquid feeding can reduce root quality.",
+      product: "Espoma Tomato-tone"
+    },
+    {
+      id: "dormancy-harvest",
+      label: "Dormancy and harvest",
+      looks: "Top growth declines after cold; root flavor and pungency are usually strongest after frost.",
+      feed: "No feeding. Harvest or let it overwinter.",
+      product: "Espoma Tomato-tone"
+    }
+  ],
+  leafyHerbs: [
+    {
+      id: "establishment",
+      label: "Establishment",
+      looks: "Small plants are rooting in and producing new tender tips.",
+      feed: "Go light. Half-strength fish only if leaves are pale and active growth has started.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "vegetative-harvest",
+      label: "Vegetative harvest",
+      looks: "Tender shoots and leaves regrow after pinching or cutting.",
+      feed: "Half-strength fish every 3-4 weeks can support leaf herbs. Do not over-soften growth.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "pre-bloom",
+      label: "Pre-bloom",
+      looks: "Stems elongate, internodes stretch, and flower buds start forming.",
+      feed: "Pinch if you want leaves. Avoid nitrogen pushes that dilute flavor and make floppy growth.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "flowering-seed",
+      label: "Flowering or seed",
+      looks: "Flowers open, seed heads form, and leaf quality often drops.",
+      feed: "Stop routine feeding. Harvest flowers/seed or cut back for regrowth.",
+      product: "Alaska Fish Fertilizer QT"
+    },
+    {
+      id: "regrowth",
+      label: "Cutback regrowth",
+      looks: "New shoots emerge after pruning or harvest.",
+      feed: "A light half-strength fish feed can restart leafy growth if the plant is not heat-stressed.",
+      product: "Alaska Fish Fertilizer QT"
+    }
+  ],
+  woodyHerbs: [
+    {
+      id: "establishment",
+      label: "Establishment",
+      looks: "Young plant or recent transplant with fresh root growth beginning.",
+      feed: "Use lean soil and careful water. Skip routine fertilizer unless growth is clearly stalled.",
+      product: "No routine feed"
+    },
+    {
+      id: "spring-flush",
+      label: "Vegetative flush",
+      looks: "New aromatic shoots extend from older woody stems.",
+      feed: "Usually no feed. Too much nitrogen makes soft, less aromatic growth.",
+      product: "No routine feed"
+    },
+    {
+      id: "flowering",
+      label: "Flowering",
+      looks: "Small flowers form on mature shoots.",
+      feed: "Do not feed for bloom. Keep drainage sharp and harvest lightly if needed.",
+      product: "No routine feed"
+    },
+    {
+      id: "hardened-growth",
+      label: "Hardened summer growth",
+      looks: "Shoots firm up, leaves are smaller/tougher, and growth slows in heat.",
+      feed: "No routine fertilizer. Avoid wet roots.",
+      product: "No routine feed"
+    },
+    {
+      id: "winter-rest",
+      label: "Winter rest",
+      looks: "Little new growth; plant is holding structure rather than producing tender shoots.",
+      feed: "No feeding.",
+      product: "No routine feed"
+    }
+  ]
+};
+
 const cropPlans = [
   {
     id: "tomatoes",
     name: "Tomatoes",
     group: "Fruit-Fill Crops",
-    note: "Fruit-fill management: steady water, calcium transport, then K-supported ripening.",
+    note: "Solanaceous fruit crop. Move from canopy build to flowering, fruit set, green fruit expansion, then ripening finish.",
+    phaseSet: "tomatoes",
+    defaultPhase: "fruit-fill",
     products: [
       { name: "Espoma Tomato-tone", rate: "3 tbsp in soil", timing: "Immediate soil top-dress" },
       { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" }
@@ -262,7 +689,9 @@ const cropPlans = [
     id: "zucchini-squash",
     name: "Zucchini & Squash",
     group: "Cucurbits",
-    note: "Support reproductive growth, pollination access, and continued harvest pressure.",
+    note: "Monoecious cucurbits. Male bloom comes first; productive phase depends on female flowers, pollination, water, and frequent harvest.",
+    phaseSet: "cucurbits",
+    defaultPhase: "production",
     products: [
       { name: "Espoma Tomato-tone", rate: "3 tbsp in soil", timing: "Immediate soil top-dress" },
       { name: "FoxFarm Tiger Bloom", rate: "4 tsp per 2-gal jug", timing: "Every 14 days during morning watering" }
@@ -272,28 +701,36 @@ const cropPlans = [
     id: "celery",
     name: "Celery",
     group: "Greens & Stalks",
-    note: "Nitrogen plus constant moisture. Do not let the root zone dry down hard.",
+    note: "Vegetative petiole crop. The target is thick, crisp stalks without drought stress or blackheart conditions.",
+    phaseSet: "celery",
+    defaultPhase: "petiole-expansion",
     products: [{ name: "Alaska Fish Fertilizer QT", rate: "4 tbsp per 2-gal jug", timing: "Weekly" }]
   },
   {
     id: "kale",
     name: "Kale",
     group: "Greens & Stalks",
-    note: "Keep vegetative growth active; avoid drought stress and heat-triggered toughness.",
+    note: "Leaf brassica. Feed for vegetative regrowth while avoiding drought and heat-triggered bolting.",
+    phaseSet: "kale",
+    defaultPhase: "harvest-regrowth",
     products: [{ name: "Alaska Fish Fertilizer QT", rate: "4 tbsp per 2-gal jug", timing: "Weekly" }]
   },
   {
     id: "corn",
     name: "Corn",
     group: "Greens & Stalks",
-    note: "Grass-family nitrogen demand is high during rapid growth and ear fill.",
+    note: "Grass crop. Nitrogen demand peaks during rapid vegetative growth and remains important through ear fill.",
+    phaseSet: "corn",
+    defaultPhase: "ear-fill",
     products: [{ name: "Alaska Fish Fertilizer QT", rate: "4 tbsp per 2-gal jug", timing: "Weekly" }]
   },
   {
     id: "eggplant",
     name: "Eggplant",
     group: "Fruit-Fill Crops",
-    note: "Treat like tomato-style fruit-fill: steady moisture, calcium availability, late K emphasis.",
+    note: "Solanaceous fruit crop. Similar feeding logic to tomato, but harvest is based on glossy, actively expanding fruit.",
+    phaseSet: "eggplant",
+    defaultPhase: "fruit-fill",
     products: [
       { name: "Espoma Tomato-tone", rate: "3 tbsp in soil", timing: "Immediate soil top-dress" },
       { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" }
@@ -303,7 +740,9 @@ const cropPlans = [
     id: "strawberries",
     name: "Strawberries",
     group: "Fruit-Fill Crops",
-    note: "Light feeding only; avoid excess nitrogen that favors leaves/runners over berry quality.",
+    note: "Perennial crown crop. Separate runner/crown growth from flowering and berry-fill phases.",
+    phaseSet: "strawberries",
+    defaultPhase: "green-fruit",
     products: [
       { name: "Espoma Tomato-tone", rate: "1.5 tbsp in soil", timing: "Immediate light soil top-dress" },
       { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" }
@@ -313,28 +752,36 @@ const cropPlans = [
     id: "leeks",
     name: "Leeks",
     group: "Roots & Storage Organs",
-    note: "Low-maintenance base fertility. Fish emulsion only as a light rescue if pale/stalled.",
+    note: "Allium pseudostem crop. Feed gently while leaves build and shafts expand; do not push lush late growth.",
+    phaseSet: "leeks",
+    defaultPhase: "shaft-expansion",
     products: [{ name: "Espoma Tomato-tone", rate: "1.5 tbsp in soil", timing: "Immediate single feed" }]
   },
   {
     id: "horseradish",
     name: "Horseradish",
     group: "Roots & Storage Organs",
-    note: "Feed once and allow natural seasonal root build.",
+    note: "Storage-root crop. Once the canopy is built, root bulking is mostly a leave-it-alone phase.",
+    phaseSet: "horseradish",
+    defaultPhase: "root-bulking",
     products: [{ name: "Espoma Tomato-tone", rate: "1.5 tbsp in soil", timing: "Immediate single feed" }]
   },
   {
     id: "herbs-leafy",
     name: "Leafy Herbs",
     group: "Herbs",
-    note: "For basil, parsley, cilantro, dill, mint, and chives. Use nitrogen lightly for leaf production.",
+    note: "For basil, parsley, cilantro, dill, mint, and chives. Feed only enough to keep tender vegetative harvest going.",
+    phaseSet: "leafyHerbs",
+    defaultPhase: "vegetative-harvest",
     products: [{ name: "Alaska Fish Fertilizer QT", rate: "Half-strength", timing: "Every 3-4 weeks only if actively growing" }]
   },
   {
     id: "herbs-woody",
     name: "Woody Herbs",
     group: "Herbs",
-    note: "Rosemary, thyme, oregano, sage, and lavender prefer leaner soil. Skip routine fish emulsion.",
+    note: "Rosemary, thyme, oregano, sage, and lavender prefer leaner soil and sharper drainage than leafy herbs.",
+    phaseSet: "woodyHerbs",
+    defaultPhase: "hardened-growth",
     products: [{ name: "No routine feed", rate: "Observe only", timing: "Feed only if genuinely pale/stalled" }]
   }
 ];
@@ -608,6 +1055,35 @@ function orderedCropPlans() {
   return orderedKeys.map((key) => cropPlans.find((crop) => crop.id === key)).filter(Boolean);
 }
 
+function readCropPhaseState() {
+  try {
+    return JSON.parse(localStorage.getItem(CROP_PHASE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function writeCropPhaseState(phaseState) {
+  localStorage.setItem(CROP_PHASE_KEY, JSON.stringify(phaseState));
+}
+
+function phasesForCrop(crop) {
+  return cropPhaseSets[crop.phaseSet] || [];
+}
+
+function selectedCropPhase(crop, phaseState = readCropPhaseState()) {
+  const phases = phasesForCrop(crop);
+  if (!phases.length) {
+    return null;
+  }
+
+  return phases.find((phase) => phase.id === phaseState[crop.id]) || phases.find((phase) => phase.id === crop.defaultPhase) || phases[0];
+}
+
+function preferredCropProduct(crop, phase) {
+  return selectedCropProduct(crop, phase?.product || crop.products[0]?.name);
+}
+
 function renderCropTracker() {
   if (!cropTracker) {
     return;
@@ -615,13 +1091,17 @@ function renderCropTracker() {
 
   const entries = readCropLog();
   const openState = readCropOpenState();
+  const phaseState = readCropPhaseState();
   cropTracker.innerHTML = orderedCropPlans()
     .map((crop) => {
       const cropEntries = entries
         .filter((entry) => entry.cropId === crop.id)
         .sort((a, b) => b.timestamp - a.timestamp);
       const latest = cropEntries[0];
-      const defaultProduct = crop.products[0];
+      const phases = phasesForCrop(crop);
+      const selectedPhase = selectedCropPhase(crop, phaseState);
+      const selectedPhaseIndex = selectedPhase ? phases.findIndex((phase) => phase.id === selectedPhase.id) : -1;
+      const defaultProduct = preferredCropProduct(crop, selectedPhase);
       const recs = crop.products
         .map(
           (product) => `
@@ -634,8 +1114,51 @@ function renderCropTracker() {
         )
         .join("");
       const options = crop.products
-        .map((product) => `<option value="${escapeHtml(product.name)}">${escapeHtml(product.name)}</option>`)
+        .map(
+          (product) =>
+            `<option value="${escapeHtml(product.name)}" ${product.name === defaultProduct.name ? "selected" : ""}>${escapeHtml(
+              product.name
+            )}</option>`
+        )
         .join("");
+      const phaseOptions = phases
+        .map(
+          (phase) =>
+            `<option value="${escapeHtml(phase.id)}" ${phase.id === selectedPhase?.id ? "selected" : ""}>${escapeHtml(
+              phase.label
+            )}</option>`
+        )
+        .join("");
+      const phaseTrack = phases
+        .map(
+          (phase, index) => `
+            <li class="${phase.id === selectedPhase?.id ? "is-current" : ""}">
+              <span>${index + 1}</span>
+              <div>
+                <strong>${escapeHtml(phase.label)}</strong>
+                <p>${escapeHtml(phase.looks)}</p>
+              </div>
+            </li>
+          `
+        )
+        .join("");
+      const phaseMarkup = selectedPhase
+        ? `
+            <section class="crop-phase-panel">
+              <label class="crop-phase-select">
+                Current phase
+                <select data-crop-phase>${phaseOptions}</select>
+              </label>
+              <div class="phase-focus">
+                <span class="phase-position">Phase ${selectedPhaseIndex + 1} of ${phases.length}</span>
+                <strong>${escapeHtml(selectedPhase.label)}</strong>
+                <p><span>Looks like:</span> ${escapeHtml(selectedPhase.looks)}</p>
+                <p><span>Feed move:</span> ${escapeHtml(selectedPhase.feed)}</p>
+              </div>
+              <ol class="phase-track">${phaseTrack}</ol>
+            </section>
+          `
+        : "";
       const history = cropEntries.length
         ? cropEntries
             .slice(0, 4)
@@ -644,6 +1167,8 @@ function renderCropTracker() {
                 <div class="crop-history-row">
                   <strong>${formatFeedDate(entry.date)}</strong>
                   <p>${escapeHtml(entry.product)} | ${escapeHtml(entry.amount)}${
+                    entry.phaseLabel ? `<br><span class="history-phase">${escapeHtml(entry.phaseLabel)}</span>` : ""
+                  }${
                     entry.note ? `<br>${escapeHtml(entry.note)}` : ""
                   }</p>
                 </div>
@@ -653,6 +1178,7 @@ function renderCropTracker() {
         : `<div class="crop-history-row"><strong>Status</strong><p>No feedings logged for this crop yet.</p></div>`;
       const isOpen = openState[crop.id] === true;
       const lastFed = latest ? `${relativeFeedDate(latest.date)} (${formatFeedDate(latest.date)})` : "not logged";
+      const phaseStatus = selectedPhase ? `Phase: ${selectedPhase.label}` : "Phase: not set";
 
       return `
         <article class="crop-card ${isOpen ? "is-open" : ""}" data-crop-id="${crop.id}">
@@ -660,12 +1186,13 @@ function renderCropTracker() {
             <span class="chevron crop-chevron" aria-hidden="true">></span>
             <span class="crop-title-wrap">
               <span class="crop-card-title">${escapeHtml(crop.name)}</span>
-              <span class="crop-last-fed">Last fed: ${lastFed}</span>
+              <span class="crop-last-fed">${escapeHtml(phaseStatus)} | Last fed: ${lastFed}</span>
             </span>
             <span class="crop-group-pill">${escapeHtml(crop.group)}</span>
           </button>
           <div class="crop-card-body">
             <p class="crop-note">${escapeHtml(crop.note)}</p>
+            ${phaseMarkup}
             <div class="crop-recs">${recs}</div>
             <div class="crop-entry">
               <label>
@@ -708,10 +1235,14 @@ function logCropFeeding(card) {
   const amount = card.querySelector("[data-crop-amount]").value.trim();
   const date = card.querySelector("[data-crop-date]").value || todayIso();
   const note = card.querySelector("[data-crop-note]").value.trim();
+  const selectedPhaseId = card.querySelector("[data-crop-phase]")?.value;
+  const selectedPhase = selectedCropPhase(crop, { [crop.id]: selectedPhaseId });
   const entries = readCropLog();
   entries.push({
     cropId: crop.id,
     cropName: crop.name,
+    phaseId: selectedPhase?.id || "",
+    phaseLabel: selectedPhase?.label || "",
     product,
     amount,
     date,
@@ -1083,6 +1614,16 @@ document.addEventListener("click", (event) => {
 });
 
 document.addEventListener("change", (event) => {
+  const phaseSelect = event.target.closest("[data-crop-phase]");
+  if (phaseSelect) {
+    const card = phaseSelect.closest(".crop-card");
+    const phaseState = readCropPhaseState();
+    phaseState[card.dataset.cropId] = phaseSelect.value;
+    writeCropPhaseState(phaseState);
+    renderCropTracker();
+    return;
+  }
+
   const select = event.target.closest("[data-crop-product]");
   if (!select) {
     return;

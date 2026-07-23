@@ -798,6 +798,131 @@ main {
   line-height: 1.4;
 }
 
+.crop-phase-panel {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(47, 95, 70, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 250, 240, 0.72);
+}
+
+.crop-phase-select {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.crop-phase-select select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 10px;
+  color: var(--ink);
+  background: #ffffff;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.phase-focus {
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+  border-left: 4px solid var(--leaf);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.phase-position {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: var(--leaf-dark);
+  background: var(--sage);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.phase-focus strong {
+  font-size: 1.02rem;
+  line-height: 1.15;
+}
+
+.phase-focus p,
+.phase-track p {
+  margin: 0;
+  color: #435047;
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.38;
+}
+
+.phase-focus p span {
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.phase-track {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.phase-track li {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid rgba(47, 95, 70, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.phase-track li > span {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--leaf-dark);
+  background: var(--sage);
+  font-size: 0.74rem;
+  font-weight: 950;
+}
+
+.phase-track li.is-current {
+  border-color: rgba(47, 95, 70, 0.42);
+  background: rgba(217, 229, 210, 0.52);
+}
+
+.phase-track li.is-current > span {
+  color: #ffffff;
+  background: var(--leaf);
+}
+
+.phase-track strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 0.9rem;
+  line-height: 1.15;
+}
+
+.history-phase {
+  display: inline-block;
+  margin-top: 2px;
+  color: var(--leaf-dark);
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
 .crop-recs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1293,6 +1418,7 @@ main {
   .detail-card,
   .action-triggers article,
   .crop-card,
+  .crop-phase-panel,
   .feed-log,
   .feed-log-card,
   .fert-example,
@@ -1300,6 +1426,8 @@ main {
   .feed-timeline article,
   .fert-card,
   .my-fert-list article,
+  .phase-focus,
+  .phase-track li,
   .summary-band article,
   .summary-grid article,
   .veg-item,
@@ -1345,6 +1473,7 @@ main {
   }
 
   .tabs,
+  .crop-phase-select select,
   .crop-entry input,
   .crop-entry select,
   .crop-entry textarea,
@@ -1376,11 +1505,17 @@ main {
   .feed-chart p,
   .feed-timeline p,
   .my-fert-list dd,
+  .phase-focus p,
+  .phase-track p,
   .summary-grid p {
     color: #dce5db;
   }
 
   .timeline-step {
+    color: #102015;
+  }
+
+  .phase-track li.is-current > span {
     color: #102015;
   }
 
