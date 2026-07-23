@@ -7,9 +7,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Garden" />
     <title>Garden</title>
-    <link rel="apple-touch-icon" href="./icon-192.png?v=30" />
+    <link rel="apple-touch-icon" href="./icon-192.png?v=31" />
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=30" />
+    <link rel="stylesheet" href="./styles.css?v=31" />
   </head>
   <body>
     <div class="app-shell">
@@ -18,7 +18,7 @@
           <p class="eyebrow">Pocket reference</p>
           <div class="title-row">
             <h1>Garden</h1>
-            <img class="app-icon-preview" src="./icon-192.png?v=30" width="56" height="56" alt="Garden home screen icon preview" />
+            <img class="app-icon-preview" src="./icon-192.png?v=31" width="56" height="56" alt="Garden home screen icon preview" />
           </div>
         </div>
         <div class="season-chip" aria-label="Current season focus">Feed + water</div>
@@ -281,7 +281,7 @@
                 <p><strong>How:</strong> Pull mulch back, sprinkle around drip line, keep off stems, scratch into top inch, water deeply.</p>
               </article>
               <article>
-                <span class="timeline-step">Every Sunday</span>
+                <span class="timeline-step">About weekly</span>
                 <h3>Greens + corn jug</h3>
                 <p><strong>Use:</strong> Alaska Fish Fertilizer QT</p>
                 <p><strong>Feed:</strong> Celery, kale, corn.</p>
@@ -289,12 +289,12 @@
                 <p><strong>How:</strong> Pour at plant bases. Give celery enough volume that the root zone stays evenly moist.</p>
               </article>
               <article>
-                <span class="timeline-step">Alternate Saturdays</span>
+                <span class="timeline-step">About every 14 days</span>
                 <h3>Squash blossom surge</h3>
                 <p><strong>Use:</strong> FoxFarm Tiger Bloom</p>
                 <p><strong>Feed:</strong> Zucchini and squash.</p>
                 <p><strong>Mix:</strong> 4 tsp into a 2-gallon watering jug.</p>
-                <p><strong>How:</strong> Apply during morning watering every 14 days to keep flower buds setting.</p>
+                <p><strong>How:</strong> Apply during morning watering on an about 14-day rhythm to keep flower buds setting.</p>
               </article>
               <article>
                 <span class="timeline-step">Mid-August onward</span>
@@ -302,7 +302,7 @@
                 <p><strong>Use:</strong> Farmer's Secret Tomato Booster</p>
                 <p><strong>Feed:</strong> Tomatoes, eggplant, strawberries.</p>
                 <p><strong>Mix:</strong> 4 tsp into a 2-gallon watering jug.</p>
-                <p><strong>How:</strong> Apply every 10-14 days through late September for fruit fill, ripening, and flavor.</p>
+                <p><strong>How:</strong> Apply on a 10-14 day rhythm through late September for fruit fill, ripening, and flavor.</p>
               </article>
               <article>
                 <span class="timeline-step">After base feed</span>
@@ -331,7 +331,7 @@
                   </div>
                   <div>
                     <dt>When</dt>
-                    <dd>Starting mid-August, every 10-14 days through late September.</dd>
+                    <dd>Starting mid-August, on a 10-14 day rhythm through late September.</dd>
                   </div>
                   <div>
                     <dt>How</dt>
@@ -358,7 +358,7 @@
                   </div>
                   <div>
                     <dt>When</dt>
-                    <dd>Every Sunday during active growth.</dd>
+                    <dd>About weekly during active growth.</dd>
                   </div>
                   <div>
                     <dt>How</dt>
@@ -412,7 +412,7 @@
                   </div>
                   <div>
                     <dt>When</dt>
-                    <dd>Alternate Saturdays, every 14 days, during morning watering for squash. For tomatoes/eggplant, count it as the bloom feed and wait 7-10 days before another liquid bloom feed.</dd>
+                    <dd>Use on an about 14-day rhythm during morning watering for squash. For tomatoes/eggplant, count it as the bloom feed and wait 7-10 days before another liquid bloom feed.</dd>
                   </div>
                   <div>
                     <dt>How</dt>
@@ -430,8 +430,14 @@
         </section>
 
         <section class="tab-panel" id="fertilizers" aria-labelledby="fertilizers-tab">
-          <div id="fertilizerProductReference"></div>
-          <section class="application-guide">
+          <nav class="fert-subtabs" aria-label="Fertilizer subsections">
+            <button class="fert-subtab is-active" type="button" data-fert-subtab="products">Your Products</button>
+            <button class="fert-subtab" type="button" data-fert-subtab="amounts">Amounts</button>
+            <button class="fert-subtab" type="button" data-fert-subtab="summary">Summary</button>
+            <button class="fert-subtab" type="button" data-fert-subtab="general">General</button>
+          </nav>
+          <div id="fertilizerProductReference" data-fert-subpanel="products"></div>
+          <section class="application-guide" data-fert-subpanel="amounts">
             <h2>How Much To Apply</h2>
             <div class="application-grid">
               <article>
@@ -476,7 +482,7 @@
               </article>
             </div>
           </section>
-          <section class="fert-quick">
+          <section class="fert-quick" data-fert-subpanel="summary">
             <h2>Fertilizer Summary</h2>
             <div class="summary-grid">
               <article>
@@ -502,11 +508,11 @@
             </div>
           </section>
 
-          <div class="fert-list" id="fertList"></div>
+          <div class="fert-list" id="fertList" data-fert-subpanel="general"></div>
         </section>
       </main>
     </div>
 
-    <script src="./app.js?v=30" defer></script>
+    <script src="./app.js?v=31" defer></script>
   </body>
 </html>

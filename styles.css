@@ -208,6 +208,44 @@ main {
   display: block;
 }
 
+.tab-panel.is-swipe-next {
+  animation: panelSwipeNext 280ms cubic-bezier(0.2, 0.9, 0.22, 1);
+}
+
+.tab-panel.is-swipe-prev {
+  animation: panelSwipePrev 280ms cubic-bezier(0.2, 0.9, 0.22, 1);
+}
+
+@keyframes panelSwipeNext {
+  0% {
+    opacity: 0.72;
+    transform: translateX(26px) scale(0.992);
+  }
+  70% {
+    opacity: 1;
+    transform: translateX(-2px) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes panelSwipePrev {
+  0% {
+    opacity: 0.72;
+    transform: translateX(-26px) scale(0.992);
+  }
+  70% {
+    opacity: 1;
+    transform: translateX(2px) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
 .summary-band {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1291,6 +1329,57 @@ main {
   line-height: 1.35;
 }
 
+.fert-subtabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 253, 247, 0.88);
+  box-shadow: 0 8px 20px rgba(55, 48, 38, 0.08);
+}
+
+.fert-subtab {
+  min-height: 40px;
+  border: 0;
+  border-radius: 7px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.fert-subtab.is-active {
+  color: #ffffff;
+  background: var(--leaf);
+}
+
+[data-fert-subpanel] {
+  display: none;
+}
+
+[data-fert-subpanel].is-active {
+  display: block;
+  animation: fertSubpanelIn 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.fert-list[data-fert-subpanel].is-active {
+  display: grid;
+}
+
+@keyframes fertSubpanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .application-guide {
   margin: 16px 0;
 }
@@ -1393,6 +1482,10 @@ main {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .fert-subtabs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .summary-band,
   .action-triggers,
   .application-grid,
@@ -1478,6 +1571,10 @@ main {
     color: #102015;
   }
 
+  .fert-subtab.is-active {
+    color: #102015;
+  }
+
   .tab[data-tab="my-crops"] {
     color: #f4f0e7;
     background: rgba(240, 200, 90, 0.12);
@@ -1548,6 +1645,7 @@ main {
   }
 
   .tabs,
+  .fert-subtabs,
   .crop-phase-select select,
   .crop-entry input,
   .crop-entry select,

@@ -94,7 +94,7 @@ const fertilizers = [
     name: "Fish Emulsion",
     tag: "Leaf growth",
     npk: "Nitrogen-forward",
-    timing: "Every 2 to 4 weeks during active vegetative growth",
+    timing: "About every 2 to 4 weeks during active vegetative growth",
     bestFor: "Lettuce, kale, young tomatoes, young peppers",
     caution: "Dilute carefully. Too much nitrogen can delay fruiting."
   },
@@ -216,12 +216,16 @@ const feedLogSummary = document.querySelector("#feedLogSummary");
 const feedLogRecent = document.querySelector("#feedLogRecent");
 const fertilizerProductReference = document.querySelector("#fertilizerProductReference");
 const productReference = document.querySelector("[data-product-reference]");
+const fertSubtabs = [...document.querySelectorAll("[data-fert-subtab]")];
+const fertSubpanels = [...document.querySelectorAll("[data-fert-subpanel]")];
+const mainContent = document.querySelector("main");
 const tabNav = document.querySelector(".tabs");
 const tabs = [...document.querySelectorAll(".tab")];
 const panels = [...document.querySelectorAll(".tab-panel")];
 
 const normalize = (value) => value.toLowerCase().trim();
 const TAB_ORDER_KEY = "gardenTabOrderV1";
+const FERT_SUBTAB_KEY = "gardenFertSubtabV1";
 const FEED_LOG_KEY = "gardenFeedLogV1";
 const CROP_LOG_KEY = "gardenCropFeedLogV1";
 const CROP_OPEN_KEY = "gardenCropOpenV1";
@@ -284,7 +288,7 @@ const cropPhaseSets = {
       id: "ripening",
       label: "Ripening finish",
       looks: "Fruit show color break, blush, softening, or clusters close to harvest.",
-      feed: "Shift to low-N, K-forward support. Farmer's Secret fits here every 10-14 days if the plant is still actively producing.",
+      feed: "Shift to low-N, K-forward support. Farmer's Secret fits here on a 10-14 day rhythm if the plant is still actively producing.",
       product: "Farmer's Secret Tomato Booster"
     },
     {
@@ -328,7 +332,7 @@ const cropPhaseSets = {
       id: "production",
       label: "Harvest production",
       looks: "New fruit are setting while older fruit size rapidly. Missed oversized fruit slow the plant down.",
-      feed: "Use Tiger Bloom every 14 days during active production. Pick frequently and water deeply at the base.",
+      feed: "Use Tiger Bloom on an about 14-day rhythm during active production. Pick frequently and water deeply at the base.",
       product: "FoxFarm Tiger Bloom"
     },
     {
@@ -610,7 +614,7 @@ const cropPhaseSets = {
       id: "vegetative-harvest",
       label: "Vegetative harvest",
       looks: "Tender shoots and leaves regrow after pinching or cutting.",
-      feed: "Half-strength fish every 3-4 weeks can support leaf herbs. Do not over-soften growth.",
+      feed: "Half-strength fish on a 3-4 week rhythm can support leaf herbs. Do not over-soften growth.",
       product: "Alaska Fish Fertilizer QT"
     },
     {
@@ -766,7 +770,7 @@ const cropPlans = [
     defaultPhase: "fruit-fill",
     products: [
       { name: "Espoma Tomato-tone", rate: "3 tbsp in soil", timing: "Immediate soil top-dress" },
-      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" },
+      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "10-14 day rhythm starting mid-August" },
       { name: "FoxFarm Tiger Bloom", rate: "4 tsp per 2-gal jug", timing: "Occasional substitute bloom feed; skip Farmer's Secret that week" }
     ]
   },
@@ -779,7 +783,7 @@ const cropPlans = [
     defaultPhase: "production",
     products: [
       { name: "Espoma Tomato-tone", rate: "3 tbsp in soil", timing: "Immediate soil top-dress" },
-      { name: "FoxFarm Tiger Bloom", rate: "4 tsp per 2-gal jug", timing: "Every 14 days during morning watering" }
+      { name: "FoxFarm Tiger Bloom", rate: "4 tsp per 2-gal jug", timing: "About 14-day rhythm during morning watering" }
     ]
   },
   {
@@ -818,7 +822,7 @@ const cropPlans = [
     defaultPhase: "fruit-fill",
     products: [
       { name: "Espoma Tomato-tone", rate: "3 tbsp in soil", timing: "Immediate soil top-dress" },
-      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" },
+      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "10-14 day rhythm starting mid-August" },
       { name: "FoxFarm Tiger Bloom", rate: "4 tsp per 2-gal jug", timing: "Occasional substitute bloom feed; skip Farmer's Secret that week" }
     ]
   },
@@ -831,7 +835,7 @@ const cropPlans = [
     defaultPhase: "green-fruit",
     products: [
       { name: "Espoma Tomato-tone", rate: "1.5 tbsp in soil", timing: "Immediate light soil top-dress" },
-      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" }
+      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "10-14 day rhythm starting mid-August" }
     ]
   },
   {
@@ -859,7 +863,7 @@ const cropPlans = [
     note: "For basil, parsley, cilantro, dill, mint, and chives. Feed only enough to keep tender vegetative harvest going.",
     phaseSet: "leafyHerbs",
     defaultPhase: "vegetative-harvest",
-    products: [{ name: "Alaska Fish Fertilizer QT", rate: "Half-strength", timing: "Every 3-4 weeks only if actively growing" }]
+    products: [{ name: "Alaska Fish Fertilizer QT", rate: "Half-strength", timing: "3-4 week rhythm only if actively growing" }]
   },
   {
     id: "herbs-woody",
@@ -1426,6 +1430,7 @@ let tabDrag = null;
 let suppressNextTabClick = false;
 let cropDrag = null;
 let suppressNextCropToggleClick = false;
+let swipeStart = null;
 
 function positionTabGhost(clientX, clientY) {
   if (!tabDrag?.ghost) {
@@ -1621,7 +1626,35 @@ function endCropDrag(event) {
   cropDrag = null;
 }
 
-function setTab(nextTab) {
+function isSwipeIgnoredTarget(target) {
+  return Boolean(
+    target.closest(
+      "button, input, select, textarea, label, .table-scroll, .tabs, .crop-toggle, .crop-entry, .alpha-strip, [data-fert-subtab]"
+    )
+  );
+}
+
+function orderedTabButtons() {
+  return currentTabOrder()
+    .map((key) => tabs.find((tab) => tab.dataset.tab === key))
+    .filter(Boolean);
+}
+
+function animateActivePanel(direction) {
+  const activePanel = panels.find((panel) => panel.classList.contains("is-active"));
+  if (!activePanel || !direction) {
+    return;
+  }
+
+  activePanel.classList.remove("is-swipe-next", "is-swipe-prev");
+  void activePanel.offsetWidth;
+  activePanel.classList.add(direction > 0 ? "is-swipe-next" : "is-swipe-prev");
+  window.setTimeout(() => {
+    activePanel.classList.remove("is-swipe-next", "is-swipe-prev");
+  }, 320);
+}
+
+function setTab(nextTab, direction = 0) {
   tabs.forEach((tab) => {
     const isActive = tab.dataset.tab === nextTab;
     tab.classList.toggle("is-active", isActive);
@@ -1633,6 +1666,85 @@ function setTab(nextTab) {
   });
 
   localStorage.setItem("gardenNotesTab", nextTab);
+  animateActivePanel(direction);
+}
+
+function shiftTabBySwipe(direction) {
+  const orderedTabs = orderedTabButtons();
+  const activeIndex = orderedTabs.findIndex((tab) => tab.classList.contains("is-active"));
+  if (activeIndex === -1) {
+    return;
+  }
+
+  const nextIndex = activeIndex + direction;
+  if (nextIndex < 0 || nextIndex >= orderedTabs.length) {
+    return;
+  }
+
+  setTab(orderedTabs[nextIndex].dataset.tab, direction);
+}
+
+function startMainSwipe(event) {
+  if (event.pointerType === "mouse" || event.button > 0 || isSwipeIgnoredTarget(event.target)) {
+    return;
+  }
+
+  swipeStart = {
+    pointerId: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+    locked: false
+  };
+}
+
+function moveMainSwipe(event) {
+  if (!swipeStart || event.pointerId !== swipeStart.pointerId) {
+    return;
+  }
+
+  const dx = event.clientX - swipeStart.x;
+  const dy = event.clientY - swipeStart.y;
+  if (!swipeStart.locked && Math.abs(dx) > 18 && Math.abs(dx) > Math.abs(dy) * 1.35) {
+    swipeStart.locked = true;
+  }
+
+  if (swipeStart.locked) {
+    event.preventDefault();
+  }
+}
+
+function endMainSwipe(event) {
+  if (!swipeStart || event.pointerId !== swipeStart.pointerId) {
+    return;
+  }
+
+  const dx = event.clientX - swipeStart.x;
+  const dy = event.clientY - swipeStart.y;
+  const qualifies = swipeStart.locked && Math.abs(dx) > 64 && Math.abs(dx) > Math.abs(dy) * 1.6;
+  if (qualifies) {
+    shiftTabBySwipe(dx < 0 ? 1 : -1);
+  }
+
+  swipeStart = null;
+}
+
+function setFertSubtab(nextSubtab) {
+  if (!fertSubtabs.length) {
+    return;
+  }
+
+  const targetSubtab = fertSubtabs.some((tab) => tab.dataset.fertSubtab === nextSubtab) ? nextSubtab : "products";
+  fertSubtabs.forEach((tab) => {
+    const isActive = tab.dataset.fertSubtab === targetSubtab;
+    tab.classList.toggle("is-active", isActive);
+    tab.setAttribute("aria-selected", String(isActive));
+  });
+
+  fertSubpanels.forEach((panel) => {
+    panel.classList.toggle("is-active", panel.dataset.fertSubpanel === targetSubtab);
+  });
+
+  localStorage.setItem(FERT_SUBTAB_KEY, targetSubtab);
 }
 
 document.addEventListener("click", (event) => {
@@ -1644,6 +1756,12 @@ document.addEventListener("click", (event) => {
     }
 
     setTab(tab.dataset.tab);
+    return;
+  }
+
+  const fertSubtab = event.target.closest("[data-fert-subtab]");
+  if (fertSubtab) {
+    setFertSubtab(fertSubtab.dataset.fertSubtab);
     return;
   }
 
@@ -1745,10 +1863,15 @@ cropTracker?.addEventListener("pointerdown", startCropDrag);
 cropTracker?.addEventListener("pointermove", moveCropDrag);
 cropTracker?.addEventListener("pointerup", endCropDrag);
 cropTracker?.addEventListener("pointercancel", endCropDrag);
+mainContent?.addEventListener("pointerdown", startMainSwipe);
+mainContent?.addEventListener("pointermove", moveMainSwipe);
+mainContent?.addEventListener("pointerup", endMainSwipe);
+mainContent?.addEventListener("pointercancel", endMainSwipe);
 
 searchInput.addEventListener("input", renderVegetables);
 
 placeProductReference();
+setFertSubtab(localStorage.getItem(FERT_SUBTAB_KEY) || "products");
 applySavedTabOrder();
 renderVegetables();
 renderFertilizers();
