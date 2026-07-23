@@ -646,8 +646,27 @@ main {
   margin-bottom: 12px;
 }
 
+.my-ferts {
+  display: flex;
+  flex-direction: column;
+}
+
 .reference-heading {
-  margin-top: 18px;
+  order: -2;
+  margin-top: 0;
+}
+
+.my-fert-list {
+  order: -1;
+  margin-bottom: 18px;
+}
+
+.feed-timeline {
+  order: 1;
+}
+
+.action-triggers {
+  order: 2;
 }
 
 .crop-tracker {
