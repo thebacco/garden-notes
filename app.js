@@ -75,14 +75,6 @@ const vegetables = [
 
 const fertilizers = [
   {
-    name: "Compost",
-    tag: "Soil base",
-    npk: "Mild, variable NPK",
-    timing: "Before planting, transplanting, or as a side-dress",
-    bestFor: "Most vegetables, soil structure, steady background nutrients",
-    caution: "Use finished compost. Unfinished material can tie up nitrogen."
-  },
-  {
     name: "Worm Castings",
     tag: "Gentle boost",
     npk: "Low NPK",
@@ -116,7 +108,7 @@ const fertilizers = [
   },
   {
     name: "Bone Meal",
-    tag: "Phosphorus",
+    tag: "Root + bloom support",
     npk: "Phosphorus-forward",
     timing: "Before planting where soil test shows need",
     bestFor: "Rooting and flowering support",
