@@ -126,9 +126,43 @@ h2 {
   background: var(--leaf);
 }
 
+.tab[data-tab="my-crops"] {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  color: var(--leaf-dark);
+  background: rgba(240, 200, 90, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(184, 101, 69, 0.2);
+}
+
+.tab[data-tab="my-crops"]::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--clay);
+  box-shadow: 0 0 0 3px rgba(184, 101, 69, 0.13);
+}
+
+.tab[data-tab="my-crops"].is-active {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--leaf), #8d7134);
+  box-shadow: 0 8px 16px rgba(47, 95, 70, 0.18);
+}
+
+.tab[data-tab="my-crops"].is-active::before {
+  background: var(--sun);
+  box-shadow: none;
+}
+
 .tab.is-placeholder {
   color: transparent;
   background: rgba(47, 95, 70, 0.16);
+}
+
+.tab[data-tab="my-crops"].is-placeholder::before {
+  opacity: 0;
 }
 
 .tab-drag-ghost {
@@ -1118,6 +1152,17 @@ main {
 
   .tab.is-active {
     color: #102015;
+  }
+
+  .tab[data-tab="my-crops"] {
+    color: #f4f0e7;
+    background: rgba(240, 200, 90, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(227, 160, 128, 0.22);
+  }
+
+  .tab[data-tab="my-crops"].is-active {
+    color: #102015;
+    background: linear-gradient(135deg, var(--leaf), var(--sun));
   }
 
   .detail-card,
