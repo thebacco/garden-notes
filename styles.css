@@ -915,6 +915,15 @@ main {
   line-height: 1.15;
 }
 
+.phase-track small {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--clay);
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.25;
+}
+
 .history-phase {
   display: inline-block;
   margin-top: 2px;
@@ -1506,6 +1515,7 @@ main {
   .feed-timeline p,
   .my-fert-list dd,
   .phase-focus p,
+  .phase-track small,
   .phase-track p,
   .summary-grid p {
     color: #dce5db;

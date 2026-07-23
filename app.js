@@ -672,6 +672,88 @@ const cropPhaseSets = {
   ]
 };
 
+const cropPhaseTimings = {
+  tomatoes: {
+    transplant: "Usually 0-2 weeks after transplant.",
+    vegetative: "Usually weeks 2-5 after transplant.",
+    flowering: "Often weeks 4-8 after transplant, depending on variety and heat.",
+    "fruit-fill": "Commonly starts after fruit set; green fruit may size for 2-5 weeks before color.",
+    ripening: "Often begins about 6-10 weeks after transplant and repeats by cluster.",
+    senescence: "Final 3-6 weeks of the season, or whenever frost, disease, or night cold wins."
+  },
+  cucurbits: {
+    establishment: "Usually 0-2 weeks after emergence or transplant.",
+    "vegetative-vining": "Usually weeks 2-4 after emergence, faster in warm soil.",
+    "male-bloom": "Often weeks 3-5; male flowers commonly show 1-2 weeks before female flowers.",
+    "female-fruit-set": "Often weeks 4-7 from sowing, once female flowers with swollen ovaries appear.",
+    production: "Usually starts around weeks 6-8 and can run for weeks if picked frequently.",
+    decline: "Any time after peak production, especially during heat, mildew, vine borer, or root stress."
+  },
+  celery: {
+    establishment: "Usually 0-2 weeks after transplant.",
+    vegetative: "Usually weeks 2-5 after transplant.",
+    "petiole-expansion": "Usually weeks 5-10 after transplant.",
+    harvest: "Often around weeks 10-12+ after transplant, depending on stalk size.",
+    bolting: "Can happen after cold shock or summer stress; timing is stress-driven."
+  },
+  kale: {
+    seedling: "Usually 0-3 weeks from sowing or after transplant.",
+    vegetative: "Usually weeks 3-6, as leaves reach harvestable size.",
+    "harvest-regrowth": "Usually week 6 onward; can continue for weeks or months in cool weather.",
+    "heat-stress": "Any time during hot weather, drought, or long-day stress.",
+    "cool-regrowth": "Often 1-3 weeks after heat eases, cutting back, or cooler weather returns."
+  },
+  corn: {
+    seedling: "Usually 0-3 weeks after emergence.",
+    "rapid-vegetative": "Usually weeks 3-7 after emergence.",
+    "tasseling-silking": "Often weeks 7-10 after planting, depending on variety and weather.",
+    "ear-fill": "Usually about 18-24 days from first visible silk to sweet-corn harvest.",
+    maturity: "After milk-stage harvest or once kernels/husks are past the eating window."
+  },
+  eggplant: {
+    establishment: "Usually 0-2 weeks after transplant.",
+    vegetative: "Usually weeks 2-5 after transplant.",
+    flowering: "Often weeks 5-8 after transplant in warm conditions.",
+    "fruit-fill": "Usually 2-4 weeks after successful fruit set.",
+    harvest: "Often starts around weeks 8-12 after transplant, then repeats while glossy fruit set continues.",
+    senescence: "Final 3-6 weeks of the season, or when cool nights and disease slow new fruit."
+  },
+  strawberries: {
+    establishment: "Usually the first 2-4 weeks after planting or crown restart.",
+    "vegetative-runners": "Common after establishment and post-harvest; runners often build through summer.",
+    flowering: "Often 3-6 weeks before a ripe flush; new transplants may flower before they should crop.",
+    "green-fruit": "Usually 2-4 weeks from bloom to ripe fruit, weather dependent.",
+    "ripe-harvest": "June-bearing flushes often run 2-4 weeks; day-neutral types repeat in waves.",
+    "post-harvest": "Starts right after the main flush; renovation/runner management often follows within 1-2 weeks."
+  },
+  leeks: {
+    establishment: "Usually 0-3 weeks after transplant.",
+    "leaf-build": "Usually weeks 3-8 after transplant.",
+    "shaft-expansion": "Usually weeks 8-16+ as leaf bases stack and the shaft thickens.",
+    maturation: "Most leeks are long-season crops, roughly 120-150 days to maturity."
+  },
+  horseradish: {
+    establishment: "Usually the first 3-4 weeks after planting a root piece.",
+    "leaf-canopy": "Usually weeks 4-10 as large leaves build the plant.",
+    "root-bulking": "Mostly midsummer through fall; think 10+ weeks after planting onward.",
+    "dormancy-harvest": "After top growth declines, usually fall after frost or very early spring."
+  },
+  leafyHerbs: {
+    establishment: "Usually 0-2 weeks after transplant or emergence.",
+    "vegetative-harvest": "Often weeks 2-8+ while tender shoots regrow after cutting.",
+    "pre-bloom": "Often weeks 4-8+ for annual herbs, or whenever heat and maturity push stems tall.",
+    "flowering-seed": "Usually a 1-4 week transition once buds open and seed heads form.",
+    regrowth: "Usually 1-3 weeks after cutting back, if heat and water allow recovery."
+  },
+  woodyHerbs: {
+    establishment: "Usually the first 2-6 weeks after transplant.",
+    "spring-flush": "Often 2-8 weeks of active new shoots in spring or after pruning.",
+    flowering: "Species-specific; often a 1-4 week bloom window.",
+    "hardened-growth": "Usually midsummer into fall, after spring growth firms up.",
+    "winter-rest": "Cool-season or winter dormancy/rest, with little tender new growth."
+  }
+};
+
 const cropPlans = [
   {
     id: "tomatoes",
@@ -1071,6 +1153,10 @@ function phasesForCrop(crop) {
   return cropPhaseSets[crop.phaseSet] || [];
 }
 
+function timingForPhase(crop, phase) {
+  return cropPhaseTimings[crop.phaseSet]?.[phase.id] || "Timing varies; use plant cues first.";
+}
+
 function selectedCropPhase(crop, phaseState = readCropPhaseState()) {
   const phases = phasesForCrop(crop);
   if (!phases.length) {
@@ -1136,6 +1222,7 @@ function renderCropTracker() {
               <span>${index + 1}</span>
               <div>
                 <strong>${escapeHtml(phase.label)}</strong>
+                <small>${escapeHtml(timingForPhase(crop, phase))}</small>
                 <p>${escapeHtml(phase.looks)}</p>
               </div>
             </li>
@@ -1152,6 +1239,7 @@ function renderCropTracker() {
               <div class="phase-focus">
                 <span class="phase-position">Phase ${selectedPhaseIndex + 1} of ${phases.length}</span>
                 <strong>${escapeHtml(selectedPhase.label)}</strong>
+                <p><span>Typical timing:</span> ${escapeHtml(timingForPhase(crop, selectedPhase))}</p>
                 <p><span>Looks like:</span> ${escapeHtml(selectedPhase.looks)}</p>
                 <p><span>Feed move:</span> ${escapeHtml(selectedPhase.feed)}</p>
               </div>
