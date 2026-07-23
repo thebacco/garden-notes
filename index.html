@@ -9,14 +9,17 @@
     <title>Garden Notes</title>
     <link rel="apple-touch-icon" href="./icon-192.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=20" />
+    <link rel="stylesheet" href="./styles.css?v=21" />
   </head>
   <body>
     <div class="app-shell">
       <header class="topbar">
         <div>
           <p class="eyebrow">Pocket reference</p>
-          <h1>Garden Notes</h1>
+          <div class="title-row">
+            <h1>Garden Notes</h1>
+            <div class="order-preview" id="cropOrderPreview" aria-live="polite"></div>
+          </div>
         </div>
         <div class="season-chip" aria-label="Current season focus">Feed + water</div>
       </header>
@@ -456,6 +459,6 @@
       </main>
     </div>
 
-    <script src="./app.js?v=20" defer></script>
+    <script src="./app.js?v=21" defer></script>
   </body>
 </html>

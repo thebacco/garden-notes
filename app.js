@@ -210,6 +210,7 @@ const fertilizerGuides = {
 const vegList = document.querySelector("#vegList");
 const fertList = document.querySelector("#fertList");
 const cropTracker = document.querySelector("#cropTracker");
+const cropOrderPreview = document.querySelector("#cropOrderPreview");
 const alphaStrip = document.querySelector("#alphaStrip");
 const searchInput = document.querySelector("#search");
 const feedLogSummary = document.querySelector("#feedLogSummary");
@@ -608,6 +609,32 @@ function orderedCropPlans() {
   return orderedKeys.map((key) => cropPlans.find((crop) => crop.id === key)).filter(Boolean);
 }
 
+function currentCropOrderIds() {
+  const visibleCards = cropTracker ? [...cropTracker.querySelectorAll(".crop-card")] : [];
+  if (visibleCards.length) {
+    return visibleCards.map((card) => card.dataset.cropId);
+  }
+
+  return orderedCropPlans().map((crop) => crop.id);
+}
+
+function renderCropOrderPreview() {
+  if (!cropOrderPreview) {
+    return;
+  }
+
+  const names = currentCropOrderIds()
+    .map((id) => cropPlans.find((crop) => crop.id === id)?.name)
+    .filter(Boolean);
+  const visibleNames = names.slice(0, 4).join(" > ");
+  const more = names.length > 4 ? ` +${names.length - 4} more` : "";
+
+  cropOrderPreview.innerHTML = `
+    <span>Crop order</span>
+    <strong>${escapeHtml(visibleNames)}${escapeHtml(more)}</strong>
+  `;
+}
+
 function renderCropTracker() {
   if (!cropTracker) {
     return;
@@ -692,6 +719,7 @@ function renderCropTracker() {
       `;
     })
     .join("");
+  renderCropOrderPreview();
 }
 
 function selectedCropProduct(crop, productName) {
@@ -753,6 +781,7 @@ function saveCropOrder() {
 
   const order = [...cropTracker.querySelectorAll(".crop-card")].map((card) => card.dataset.cropId);
   localStorage.setItem(CROP_ORDER_KEY, JSON.stringify(order));
+  renderCropOrderPreview();
 }
 
 function tabKeys() {
@@ -928,6 +957,7 @@ function reorderCropDrag(clientY) {
   });
 
   cropTracker.insertBefore(cropDrag.card, target || null);
+  renderCropOrderPreview();
 }
 
 function startCropDrag(event) {
@@ -1114,6 +1144,7 @@ renderVegetables();
 renderFertilizers();
 renderFeedLog();
 renderCropTracker();
+renderCropOrderPreview();
 setTab(localStorage.getItem("gardenNotesTab") || "vegetables");
 
 if ("serviceWorker" in navigator) {
