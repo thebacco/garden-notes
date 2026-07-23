@@ -214,10 +214,12 @@ const alphaStrip = document.querySelector("#alphaStrip");
 const searchInput = document.querySelector("#search");
 const feedLogSummary = document.querySelector("#feedLogSummary");
 const feedLogRecent = document.querySelector("#feedLogRecent");
+const tabNav = document.querySelector(".tabs");
 const tabs = [...document.querySelectorAll(".tab")];
 const panels = [...document.querySelectorAll(".tab-panel")];
 
 const normalize = (value) => value.toLowerCase().trim();
+const TAB_ORDER_KEY = "gardenTabOrderV1";
 const FEED_LOG_KEY = "gardenFeedLogV1";
 const CROP_LOG_KEY = "gardenCropFeedLogV1";
 const feedProtocols = {
@@ -691,6 +693,105 @@ function undoLastCropLog() {
   renderCropTracker();
 }
 
+function tabKeys() {
+  return tabs.map((tab) => tab.dataset.tab);
+}
+
+function currentTabOrder() {
+  return [...tabNav.querySelectorAll(".tab")].map((tab) => tab.dataset.tab);
+}
+
+function applySavedTabOrder() {
+  if (!tabNav) {
+    return;
+  }
+
+  let savedOrder = [];
+  try {
+    savedOrder = JSON.parse(localStorage.getItem(TAB_ORDER_KEY) || "[]");
+  } catch {
+    savedOrder = [];
+  }
+
+  const validKeys = tabKeys();
+  const orderedKeys = [...savedOrder.filter((key) => validKeys.includes(key)), ...validKeys.filter((key) => !savedOrder.includes(key))];
+  orderedKeys.forEach((key) => {
+    const tab = tabs.find((item) => item.dataset.tab === key);
+    if (tab) {
+      tabNav.appendChild(tab);
+    }
+  });
+}
+
+function saveTabOrder() {
+  if (!tabNav) {
+    return;
+  }
+
+  localStorage.setItem(TAB_ORDER_KEY, JSON.stringify(currentTabOrder()));
+}
+
+let draggedTab = null;
+let tabDragStart = null;
+let tabDidDrag = false;
+let suppressNextTabClick = false;
+
+function startTabDrag(event) {
+  const tab = event.target.closest(".tab");
+  if (!tab || event.button > 0) {
+    return;
+  }
+
+  draggedTab = tab;
+  tabDragStart = { x: event.clientX, y: event.clientY };
+  tabDidDrag = false;
+  tab.setPointerCapture?.(event.pointerId);
+}
+
+function moveTabDrag(event) {
+  if (!draggedTab || !tabDragStart) {
+    return;
+  }
+
+  const distance = Math.hypot(event.clientX - tabDragStart.x, event.clientY - tabDragStart.y);
+  if (distance < 8 && !tabDidDrag) {
+    return;
+  }
+
+  tabDidDrag = true;
+  draggedTab.classList.add("is-dragging");
+  event.preventDefault();
+
+  const target = document.elementFromPoint(event.clientX, event.clientY)?.closest(".tab");
+  if (!target || target === draggedTab || !tabNav.contains(target)) {
+    return;
+  }
+
+  const targetRect = target.getBoundingClientRect();
+  const insertAfter = event.clientY > targetRect.top + targetRect.height / 2 || event.clientX > targetRect.left + targetRect.width / 2;
+  tabNav.insertBefore(draggedTab, insertAfter ? target.nextSibling : target);
+}
+
+function endTabDrag(event) {
+  if (!draggedTab) {
+    return;
+  }
+
+  draggedTab.releasePointerCapture?.(event.pointerId);
+  draggedTab.classList.remove("is-dragging");
+  if (tabDidDrag) {
+    saveTabOrder();
+    suppressNextTabClick = true;
+    window.setTimeout(() => {
+      suppressNextTabClick = false;
+    }, 250);
+  }
+
+  draggedTab = null;
+  tabDragStart = null;
+  tabDidDrag = false;
+}
+
 function setTab(nextTab) {
   tabs.forEach((tab) => {
     const isActive = tab.dataset.tab === nextTab;
@@ -708,6 +809,11 @@ function setTab(nextTab) {
 document.addEventListener("click", (event) => {
   const tab = event.target.closest(".tab");
   if (tab) {
+    if (suppressNextTabClick) {
+      event.preventDefault();
+      return;
+    }
+
     setTab(tab.dataset.tab);
     return;
   }
@@ -769,8 +875,14 @@ document.addEventListener("change", (event) => {
   card.querySelector("[data-crop-amount]").value = product.rate;
 });
 
+tabNav?.addEventListener("pointerdown", startTabDrag);
+tabNav?.addEventListener("pointermove", moveTabDrag);
+tabNav?.addEventListener("pointerup", endTabDrag);
+tabNav?.addEventListener("pointercancel", endTabDrag);
+
 searchInput.addEventListener("input", renderVegetables);
 
+applySavedTabOrder();
 renderVegetables();
 renderFertilizers();
 renderFeedLog();

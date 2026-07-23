@@ -116,11 +116,21 @@ h2 {
   color: var(--muted);
   background: transparent;
   font-weight: 850;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
 }
 
 .tab.is-active {
   color: #ffffff;
   background: var(--leaf);
+}
+
+.tab.is-dragging {
+  opacity: 0.72;
+  cursor: grabbing;
+  pointer-events: none;
+  transform: scale(0.98);
 }
 
 main {
