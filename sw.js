@@ -1,12 +1,12 @@
-const CACHE_NAME = "garden-notes-v36";
+const CACHE_NAME = "garden-notes-v37";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=36",
-  "./app.js?v=36",
+  "./styles.css?v=37",
+  "./app.js?v=37",
   "./manifest.webmanifest",
-  "./icon-192.png?v=36",
-  "./icon-512.png?v=36"
+  "./icon-192.png?v=37",
+  "./icon-512.png?v=37"
 ];
 
 self.addEventListener("install", (event) => {
