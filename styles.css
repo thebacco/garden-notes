@@ -83,31 +83,13 @@ h1 {
   letter-spacing: 0;
 }
 
-.order-preview {
-  display: grid;
-  max-width: min(420px, 46vw);
-  gap: 2px;
-  padding: 9px 11px;
-  border: 1px solid rgba(184, 101, 69, 0.24);
-  border-radius: 8px;
-  background: rgba(240, 200, 90, 0.18);
-}
-
-.order-preview span {
-  color: var(--muted);
-  font-size: 0.68rem;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.order-preview strong {
-  overflow: hidden;
-  color: #6e3a26;
-  font-size: 0.82rem;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.app-icon-preview {
+  width: clamp(46px, 10vw, 64px);
+  height: clamp(46px, 10vw, 64px);
+  border: 1px solid rgba(47, 95, 70, 0.24);
+  border-radius: 14px;
+  box-shadow: 0 8px 18px rgba(31, 42, 36, 0.16);
+  object-fit: cover;
 }
 
 h2 {
@@ -1196,10 +1178,6 @@ main {
     align-items: flex-end;
   }
 
-  .order-preview {
-    max-width: 100%;
-  }
-
   .crop-tracker-head {
     align-items: stretch;
     flex-direction: column;
@@ -1336,14 +1314,6 @@ main {
   .crop-drag-ghost {
     color: #f4f0e7;
     background: #182019;
-  }
-
-  .order-preview {
-    background: rgba(240, 200, 90, 0.12);
-  }
-
-  .order-preview strong {
-    color: #ffd9ca;
   }
 
   .table-scroll {
