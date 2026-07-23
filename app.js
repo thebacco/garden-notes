@@ -731,10 +731,36 @@ function saveTabOrder() {
   localStorage.setItem(TAB_ORDER_KEY, JSON.stringify(currentTabOrder()));
 }
 
-let draggedTab = null;
-let tabDragStart = null;
-let tabDidDrag = false;
+let tabDrag = null;
 let suppressNextTabClick = false;
+
+function positionTabGhost(clientX, clientY) {
+  if (!tabDrag?.ghost) {
+    return;
+  }
+
+  tabDrag.ghost.style.left = `${clientX}px`;
+  tabDrag.ghost.style.top = `${clientY}px`;
+}
+
+function activateTabDrag(event) {
+  if (!tabDrag || tabDrag.active) {
+    return;
+  }
+
+  const rect = tabDrag.tab.getBoundingClientRect();
+  const ghost = document.createElement("div");
+  ghost.className = "tab-drag-ghost";
+  ghost.textContent = tabDrag.tab.textContent;
+  ghost.style.width = `${rect.width}px`;
+  ghost.style.height = `${rect.height}px`;
+  document.body.appendChild(ghost);
+
+  tabDrag.active = true;
+  tabDrag.ghost = ghost;
+  tabDrag.tab.classList.add("is-placeholder");
+  positionTabGhost(event.clientX, event.clientY);
+}
 
 function startTabDrag(event) {
   const tab = event.target.closest(".tab");
@@ -742,44 +768,54 @@ function startTabDrag(event) {
     return;
   }
 
-  draggedTab = tab;
-  tabDragStart = { x: event.clientX, y: event.clientY };
-  tabDidDrag = false;
+  tabDrag = {
+    tab,
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    active: false,
+    ghost: null
+  };
   tab.setPointerCapture?.(event.pointerId);
 }
 
 function moveTabDrag(event) {
-  if (!draggedTab || !tabDragStart) {
+  if (!tabDrag || event.pointerId !== tabDrag.pointerId) {
     return;
   }
 
-  const distance = Math.hypot(event.clientX - tabDragStart.x, event.clientY - tabDragStart.y);
-  if (distance < 8 && !tabDidDrag) {
+  const distance = Math.hypot(event.clientX - tabDrag.startX, event.clientY - tabDrag.startY);
+  if (!tabDrag.active && distance < 8) {
     return;
   }
 
-  tabDidDrag = true;
-  draggedTab.classList.add("is-dragging");
+  activateTabDrag(event);
   event.preventDefault();
+  positionTabGhost(event.clientX, event.clientY);
 
   const target = document.elementFromPoint(event.clientX, event.clientY)?.closest(".tab");
-  if (!target || target === draggedTab || !tabNav.contains(target)) {
+  if (!target || target === tabDrag.tab || !tabNav.contains(target)) {
     return;
   }
 
   const targetRect = target.getBoundingClientRect();
-  const insertAfter = event.clientY > targetRect.top + targetRect.height / 2 || event.clientX > targetRect.left + targetRect.width / 2;
-  tabNav.insertBefore(draggedTab, insertAfter ? target.nextSibling : target);
+  const sameRow = event.clientY >= targetRect.top && event.clientY <= targetRect.bottom;
+  const insertAfter = sameRow
+    ? event.clientX > targetRect.left + targetRect.width / 2
+    : event.clientY > targetRect.top + targetRect.height / 2;
+  tabNav.insertBefore(tabDrag.tab, insertAfter ? target.nextSibling : target);
 }
 
 function endTabDrag(event) {
-  if (!draggedTab) {
+  if (!tabDrag || event.pointerId !== tabDrag.pointerId) {
     return;
   }
 
-  draggedTab.releasePointerCapture?.(event.pointerId);
-  draggedTab.classList.remove("is-dragging");
-  if (tabDidDrag) {
+  tabDrag.tab.releasePointerCapture?.(event.pointerId);
+  tabDrag.tab.classList.remove("is-placeholder");
+  tabDrag.ghost?.remove();
+
+  if (tabDrag.active) {
     saveTabOrder();
     suppressNextTabClick = true;
     window.setTimeout(() => {
@@ -787,9 +823,7 @@ function endTabDrag(event) {
     }, 250);
   }
 
-  draggedTab = null;
-  tabDragStart = null;
-  tabDidDrag = false;
+  tabDrag = null;
 }
 
 function setTab(nextTab) {

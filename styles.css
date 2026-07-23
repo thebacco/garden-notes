@@ -126,11 +126,24 @@ h2 {
   background: var(--leaf);
 }
 
-.tab.is-dragging {
-  opacity: 0.72;
-  cursor: grabbing;
+.tab.is-placeholder {
+  color: transparent;
+  background: rgba(47, 95, 70, 0.16);
+}
+
+.tab-drag-ghost {
+  position: fixed;
+  z-index: 50;
+  display: grid;
+  min-height: 44px;
+  place-items: center;
+  border-radius: 7px;
+  color: #ffffff;
+  background: var(--leaf);
+  box-shadow: 0 12px 24px rgba(31, 42, 36, 0.2);
+  font-weight: 900;
   pointer-events: none;
-  transform: scale(0.98);
+  transform: translate(-50%, -50%) scale(1.04);
 }
 
 main {
@@ -1159,6 +1172,7 @@ main {
   .search-wrap input {
     background: #182019;
   }
+
 
   .ghost-button {
     color: var(--leaf-dark);
