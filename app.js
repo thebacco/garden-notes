@@ -1733,7 +1733,8 @@ function setFertSubtab(nextSubtab) {
     return;
   }
 
-  const targetSubtab = fertSubtabs.some((tab) => tab.dataset.fertSubtab === nextSubtab) ? nextSubtab : "products";
+  const requestedSubtab = nextSubtab === "general" ? "summary" : nextSubtab;
+  const targetSubtab = fertSubtabs.some((tab) => tab.dataset.fertSubtab === requestedSubtab) ? requestedSubtab : "products";
   fertSubtabs.forEach((tab) => {
     const isActive = tab.dataset.fertSubtab === targetSubtab;
     tab.classList.toggle("is-active", isActive);
