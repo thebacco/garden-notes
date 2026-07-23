@@ -240,7 +240,7 @@ const feedProtocols = {
   },
   tigerBloom: {
     label: "Tiger Bloom",
-    crops: "Zucchini, squash",
+    crops: "Zucchini, squash; occasional tomatoes/eggplant",
     dose: "4 tsp per 2-gal jug"
   },
   farmersSecret: {
@@ -766,7 +766,8 @@ const cropPlans = [
     defaultPhase: "fruit-fill",
     products: [
       { name: "Espoma Tomato-tone", rate: "3 tbsp in soil", timing: "Immediate soil top-dress" },
-      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" }
+      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" },
+      { name: "FoxFarm Tiger Bloom", rate: "4 tsp per 2-gal jug", timing: "Occasional substitute bloom feed; skip Farmer's Secret that week" }
     ]
   },
   {
@@ -817,7 +818,8 @@ const cropPlans = [
     defaultPhase: "fruit-fill",
     products: [
       { name: "Espoma Tomato-tone", rate: "3 tbsp in soil", timing: "Immediate soil top-dress" },
-      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" }
+      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" },
+      { name: "FoxFarm Tiger Bloom", rate: "4 tsp per 2-gal jug", timing: "Occasional substitute bloom feed; skip Farmer's Secret that week" }
     ]
   },
   {
