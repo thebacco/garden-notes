@@ -222,6 +222,7 @@ const normalize = (value) => value.toLowerCase().trim();
 const TAB_ORDER_KEY = "gardenTabOrderV1";
 const FEED_LOG_KEY = "gardenFeedLogV1";
 const CROP_LOG_KEY = "gardenCropFeedLogV1";
+const CROP_OPEN_KEY = "gardenCropOpenV1";
 const feedProtocols = {
   tomatoTone: {
     label: "Tomato-tone",
@@ -581,12 +582,25 @@ function writeCropLog(entries) {
   localStorage.setItem(CROP_LOG_KEY, JSON.stringify(entries));
 }
 
+function readCropOpenState() {
+  try {
+    return JSON.parse(localStorage.getItem(CROP_OPEN_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function writeCropOpenState(openState) {
+  localStorage.setItem(CROP_OPEN_KEY, JSON.stringify(openState));
+}
+
 function renderCropTracker() {
   if (!cropTracker) {
     return;
   }
 
   const entries = readCropLog();
+  const openState = readCropOpenState();
   cropTracker.innerHTML = cropPlans
     .map((crop) => {
       const cropEntries = entries
@@ -623,34 +637,42 @@ function renderCropTracker() {
             )
             .join("")
         : `<div class="crop-history-row"><strong>Status</strong><p>No feedings logged for this crop yet.</p></div>`;
+      const isOpen = openState[crop.id] === true;
+      const lastFed = latest ? `${relativeFeedDate(latest.date)} (${formatFeedDate(latest.date)})` : "not logged";
 
       return `
-        <article class="crop-card" data-crop-id="${crop.id}">
-          <div class="crop-card-head">
-            <h3>${escapeHtml(crop.name)}</h3>
+        <article class="crop-card ${isOpen ? "is-open" : ""}" data-crop-id="${crop.id}">
+          <button class="crop-toggle" type="button" data-crop-toggle aria-expanded="${String(isOpen)}">
+            <span class="chevron crop-chevron" aria-hidden="true">></span>
+            <span class="crop-title-wrap">
+              <span class="crop-card-title">${escapeHtml(crop.name)}</span>
+              <span class="crop-last-fed">Last fed: ${lastFed}</span>
+            </span>
             <span class="crop-group-pill">${escapeHtml(crop.group)}</span>
-          </div>
-          <p class="crop-note">${escapeHtml(crop.note)}</p>
-          <div class="crop-recs">${recs}</div>
-          <div class="crop-entry">
-            <label>
-              Date
-              <input type="date" data-crop-date value="${todayIso()}" />
-            </label>
-            <label>
-              Product
-              <select data-crop-product>${options}</select>
-            </label>
-            <label>
-              Amount
-              <input type="text" data-crop-amount value="${escapeHtml(defaultProduct.rate)}" />
-            </label>
-            <textarea data-crop-note placeholder="Notes: what looked dry, pale, flowering, fruiting, skipped, etc."></textarea>
-            <button type="button" data-crop-log>Log Feeding</button>
-          </div>
-          <div class="crop-history">
-            <span class="detail-label">Last fed: ${latest ? `${relativeFeedDate(latest.date)} (${formatFeedDate(latest.date)})` : "not logged"}</span>
-            ${history}
+          </button>
+          <div class="crop-card-body">
+            <p class="crop-note">${escapeHtml(crop.note)}</p>
+            <div class="crop-recs">${recs}</div>
+            <div class="crop-entry">
+              <label>
+                Date
+                <input type="date" data-crop-date value="${todayIso()}" />
+              </label>
+              <label>
+                Product
+                <select data-crop-product>${options}</select>
+              </label>
+              <label>
+                Amount
+                <input type="text" data-crop-amount value="${escapeHtml(defaultProduct.rate)}" />
+              </label>
+              <textarea data-crop-note placeholder="Notes: what looked dry, pale, flowering, fruiting, skipped, etc."></textarea>
+              <button type="button" data-crop-log>Log Feeding</button>
+            </div>
+            <div class="crop-history">
+              <span class="detail-label">History</span>
+              ${history}
+            </div>
           </div>
         </article>
       `;
@@ -690,6 +712,23 @@ function undoLastCropLog() {
   const entries = readCropLog();
   entries.pop();
   writeCropLog(entries);
+  renderCropTracker();
+}
+
+function toggleCropCard(card) {
+  const cropId = card.dataset.cropId;
+  const openState = readCropOpenState();
+  openState[cropId] = !card.classList.contains("is-open");
+  writeCropOpenState(openState);
+  renderCropTracker();
+}
+
+function setAllCropCards(open) {
+  const openState = cropPlans.reduce((state, crop) => {
+    state[crop.id] = open;
+    return state;
+  }, {});
+  writeCropOpenState(openState);
   renderCropTracker();
 }
 
@@ -876,6 +915,24 @@ document.addEventListener("click", (event) => {
   const cropLogButton = event.target.closest("[data-crop-log]");
   if (cropLogButton) {
     logCropFeeding(cropLogButton.closest(".crop-card"));
+    return;
+  }
+
+  const cropToggleButton = event.target.closest("[data-crop-toggle]");
+  if (cropToggleButton) {
+    toggleCropCard(cropToggleButton.closest(".crop-card"));
+    return;
+  }
+
+  const cropExpandButton = event.target.closest("[data-crop-expand-all]");
+  if (cropExpandButton) {
+    setAllCropCards(true);
+    return;
+  }
+
+  const cropCollapseButton = event.target.closest("[data-crop-collapse-all]");
+  if (cropCollapseButton) {
+    setAllCropCards(false);
     return;
   }
 

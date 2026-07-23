@@ -9,7 +9,7 @@
     <title>Garden Notes</title>
     <link rel="apple-touch-icon" href="./icon-192.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=18" />
+    <link rel="stylesheet" href="./styles.css?v=19" />
   </head>
   <body>
     <div class="app-shell">
@@ -62,7 +62,11 @@
                 <p class="eyebrow">Record what you did</p>
                 <h2>My Crops</h2>
               </div>
-              <button class="ghost-button" type="button" data-crop-undo>Undo Last</button>
+              <div class="crop-toolbar">
+                <button class="ghost-button" type="button" data-crop-expand-all>Expand All</button>
+                <button class="ghost-button" type="button" data-crop-collapse-all>Collapse All</button>
+                <button class="ghost-button" type="button" data-crop-undo>Undo Last</button>
+              </div>
             </div>
             <div class="crop-tracker-list" id="cropTracker"></div>
           </section>
@@ -452,6 +456,6 @@
       </main>
     </div>
 
-    <script src="./app.js?v=18" defer></script>
+    <script src="./app.js?v=19" defer></script>
   </body>
 </html>
