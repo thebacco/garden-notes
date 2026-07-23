@@ -223,6 +223,7 @@ const TAB_ORDER_KEY = "gardenTabOrderV1";
 const FEED_LOG_KEY = "gardenFeedLogV1";
 const CROP_LOG_KEY = "gardenCropFeedLogV1";
 const CROP_OPEN_KEY = "gardenCropOpenV1";
+const CROP_ORDER_KEY = "gardenCropOrderV1";
 const feedProtocols = {
   tomatoTone: {
     label: "Tomato-tone",
@@ -594,6 +595,19 @@ function writeCropOpenState(openState) {
   localStorage.setItem(CROP_OPEN_KEY, JSON.stringify(openState));
 }
 
+function orderedCropPlans() {
+  let savedOrder = [];
+  try {
+    savedOrder = JSON.parse(localStorage.getItem(CROP_ORDER_KEY) || "[]");
+  } catch {
+    savedOrder = [];
+  }
+
+  const validKeys = cropPlans.map((crop) => crop.id);
+  const orderedKeys = [...savedOrder.filter((key) => validKeys.includes(key)), ...validKeys.filter((key) => !savedOrder.includes(key))];
+  return orderedKeys.map((key) => cropPlans.find((crop) => crop.id === key)).filter(Boolean);
+}
+
 function renderCropTracker() {
   if (!cropTracker) {
     return;
@@ -601,7 +615,7 @@ function renderCropTracker() {
 
   const entries = readCropLog();
   const openState = readCropOpenState();
-  cropTracker.innerHTML = cropPlans
+  cropTracker.innerHTML = orderedCropPlans()
     .map((crop) => {
       const cropEntries = entries
         .filter((entry) => entry.cropId === crop.id)
@@ -724,12 +738,21 @@ function toggleCropCard(card) {
 }
 
 function setAllCropCards(open) {
-  const openState = cropPlans.reduce((state, crop) => {
+  const openState = orderedCropPlans().reduce((state, crop) => {
     state[crop.id] = open;
     return state;
   }, {});
   writeCropOpenState(openState);
   renderCropTracker();
+}
+
+function saveCropOrder() {
+  if (!cropTracker) {
+    return;
+  }
+
+  const order = [...cropTracker.querySelectorAll(".crop-card")].map((card) => card.dataset.cropId);
+  localStorage.setItem(CROP_ORDER_KEY, JSON.stringify(order));
 }
 
 function tabKeys() {
@@ -772,6 +795,8 @@ function saveTabOrder() {
 
 let tabDrag = null;
 let suppressNextTabClick = false;
+let cropDrag = null;
+let suppressNextCropToggleClick = false;
 
 function positionTabGhost(clientX, clientY) {
   if (!tabDrag?.ghost) {
@@ -865,6 +890,108 @@ function endTabDrag(event) {
   tabDrag = null;
 }
 
+function positionCropGhost(clientX, clientY) {
+  if (!cropDrag?.ghost) {
+    return;
+  }
+
+  cropDrag.ghost.style.left = `${clientX}px`;
+  cropDrag.ghost.style.top = `${clientY}px`;
+}
+
+function activateCropDrag(event) {
+  if (!cropDrag || cropDrag.active) {
+    return;
+  }
+
+  const rect = cropDrag.card.getBoundingClientRect();
+  const title = cropDrag.card.querySelector(".crop-card-title")?.textContent || "Crop";
+  const group = cropDrag.card.querySelector(".crop-group-pill")?.textContent || "";
+  const ghost = document.createElement("div");
+  ghost.className = "crop-drag-ghost";
+  ghost.innerHTML = `<strong>${escapeHtml(title)}</strong><span>${escapeHtml(group)}</span>`;
+  ghost.style.width = `${rect.width}px`;
+  document.body.appendChild(ghost);
+
+  cropDrag.card.style.height = `${rect.height}px`;
+  cropDrag.card.classList.add("is-card-placeholder");
+  cropDrag.active = true;
+  cropDrag.ghost = ghost;
+  positionCropGhost(event.clientX, event.clientY);
+}
+
+function reorderCropDrag(clientY) {
+  const cards = [...cropTracker.querySelectorAll(".crop-card:not(.is-card-placeholder)")];
+  const target = cards.find((card) => {
+    const rect = card.getBoundingClientRect();
+    return clientY < rect.top + rect.height / 2;
+  });
+
+  cropTracker.insertBefore(cropDrag.card, target || null);
+}
+
+function startCropDrag(event) {
+  const toggle = event.target.closest("[data-crop-toggle]");
+  if (!toggle || event.button > 0) {
+    return;
+  }
+
+  const card = toggle.closest(".crop-card");
+  cropDrag = {
+    card,
+    handle: toggle,
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    active: false,
+    ghost: null
+  };
+  toggle.setPointerCapture?.(event.pointerId);
+}
+
+function moveCropDrag(event) {
+  if (!cropDrag || event.pointerId !== cropDrag.pointerId) {
+    return;
+  }
+
+  const distance = Math.hypot(event.clientX - cropDrag.startX, event.clientY - cropDrag.startY);
+  if (!cropDrag.active && distance < 8) {
+    return;
+  }
+
+  activateCropDrag(event);
+  event.preventDefault();
+  positionCropGhost(event.clientX, event.clientY);
+  reorderCropDrag(event.clientY);
+
+  if (event.clientY < 80) {
+    window.scrollBy({ top: -14, behavior: "auto" });
+  } else if (event.clientY > window.innerHeight - 80) {
+    window.scrollBy({ top: 14, behavior: "auto" });
+  }
+}
+
+function endCropDrag(event) {
+  if (!cropDrag || event.pointerId !== cropDrag.pointerId) {
+    return;
+  }
+
+  cropDrag.handle.releasePointerCapture?.(event.pointerId);
+  cropDrag.card.classList.remove("is-card-placeholder");
+  cropDrag.card.style.height = "";
+  cropDrag.ghost?.remove();
+
+  if (cropDrag.active) {
+    saveCropOrder();
+    suppressNextCropToggleClick = true;
+    window.setTimeout(() => {
+      suppressNextCropToggleClick = false;
+    }, 250);
+  }
+
+  cropDrag = null;
+}
+
 function setTab(nextTab) {
   tabs.forEach((tab) => {
     const isActive = tab.dataset.tab === nextTab;
@@ -920,6 +1047,11 @@ document.addEventListener("click", (event) => {
 
   const cropToggleButton = event.target.closest("[data-crop-toggle]");
   if (cropToggleButton) {
+    if (suppressNextCropToggleClick) {
+      event.preventDefault();
+      return;
+    }
+
     toggleCropCard(cropToggleButton.closest(".crop-card"));
     return;
   }
@@ -970,6 +1102,10 @@ tabNav?.addEventListener("pointerdown", startTabDrag);
 tabNav?.addEventListener("pointermove", moveTabDrag);
 tabNav?.addEventListener("pointerup", endTabDrag);
 tabNav?.addEventListener("pointercancel", endTabDrag);
+cropTracker?.addEventListener("pointerdown", startCropDrag);
+cropTracker?.addEventListener("pointermove", moveCropDrag);
+cropTracker?.addEventListener("pointerup", endCropDrag);
+cropTracker?.addEventListener("pointercancel", endCropDrag);
 
 searchInput.addEventListener("input", renderVegetables);
 

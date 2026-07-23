@@ -684,7 +684,51 @@ main {
   padding: 12px;
   color: var(--ink);
   background: transparent;
+  cursor: grab;
   text-align: left;
+  touch-action: none;
+  user-select: none;
+}
+
+.crop-card.is-card-placeholder {
+  background: rgba(47, 95, 70, 0.12);
+  box-shadow: inset 0 0 0 2px rgba(47, 95, 70, 0.18);
+}
+
+.crop-card.is-card-placeholder > * {
+  visibility: hidden;
+}
+
+.crop-drag-ghost {
+  position: fixed;
+  z-index: 60;
+  display: grid;
+  gap: 4px;
+  min-height: 64px;
+  align-content: center;
+  border: 1px solid rgba(47, 95, 70, 0.24);
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--ink);
+  background: #fffdf7;
+  box-shadow: 0 16px 34px rgba(31, 42, 36, 0.22);
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1.015);
+}
+
+.crop-drag-ghost strong {
+  font-size: 1.05rem;
+  line-height: 1.12;
+}
+
+.crop-drag-ghost span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: var(--leaf-dark);
+  background: var(--sage);
+  font-size: 0.72rem;
+  font-weight: 900;
 }
 
 .crop-card.is-open .crop-chevron {
@@ -1244,6 +1288,15 @@ main {
   .summary-grid article,
   .veg-item,
   .note-card {
+    background: #182019;
+  }
+
+  .crop-card.is-card-placeholder {
+    background: #243322;
+  }
+
+  .crop-drag-ghost {
+    color: #f4f0e7;
     background: #182019;
   }
 
