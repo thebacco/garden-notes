@@ -214,6 +214,8 @@ const alphaStrip = document.querySelector("#alphaStrip");
 const searchInput = document.querySelector("#search");
 const feedLogSummary = document.querySelector("#feedLogSummary");
 const feedLogRecent = document.querySelector("#feedLogRecent");
+const fertilizerProductReference = document.querySelector("#fertilizerProductReference");
+const productReference = document.querySelector("[data-product-reference]");
 const tabNav = document.querySelector(".tabs");
 const tabs = [...document.querySelectorAll(".tab")];
 const panels = [...document.querySelectorAll(".tab-panel")];
@@ -988,6 +990,12 @@ function renderFertilizers() {
     .join("");
 }
 
+function placeProductReference() {
+  if (fertilizerProductReference && productReference && productReference.parentElement !== fertilizerProductReference) {
+    fertilizerProductReference.appendChild(productReference);
+  }
+}
+
 function readFeedLog() {
   try {
     return JSON.parse(localStorage.getItem(FEED_LOG_KEY) || "[]");
@@ -1738,6 +1746,7 @@ cropTracker?.addEventListener("pointercancel", endCropDrag);
 
 searchInput.addEventListener("input", renderVegetables);
 
+placeProductReference();
 applySavedTabOrder();
 renderVegetables();
 renderFertilizers();

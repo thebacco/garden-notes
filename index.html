@@ -7,9 +7,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Garden" />
     <title>Garden</title>
-    <link rel="apple-touch-icon" href="./icon-192.png?v=26" />
+    <link rel="apple-touch-icon" href="./icon-192.png?v=27" />
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=26" />
+    <link rel="stylesheet" href="./styles.css?v=27" />
   </head>
   <body>
     <div class="app-shell">
@@ -18,7 +18,7 @@
           <p class="eyebrow">Pocket reference</p>
           <div class="title-row">
             <h1>Garden</h1>
-            <img class="app-icon-preview" src="./icon-192.png?v=26" width="56" height="56" alt="Garden home screen icon preview" />
+            <img class="app-icon-preview" src="./icon-192.png?v=27" width="56" height="56" alt="Garden home screen icon preview" />
           </div>
         </div>
         <div class="season-chip" aria-label="Current season focus">Feed + water</div>
@@ -313,8 +313,9 @@
               </article>
             </div>
 
-            <h2 class="reference-heading">Product Reference</h2>
-            <div class="my-fert-list">
+            <section class="product-reference" data-product-reference>
+              <h2 class="reference-heading">Product Reference</h2>
+              <div class="my-fert-list">
               <article>
                 <div>
                   <div class="fert-card-head">
@@ -423,13 +424,15 @@
                   </div>
                 </dl>
               </article>
-            </div>
+              </div>
+            </section>
           </section>
         </section>
 
         <section class="tab-panel" id="fertilizers" aria-labelledby="fertilizers-tab">
+          <div id="fertilizerProductReference"></div>
           <section class="fert-quick">
-            <h2>Quick Summary</h2>
+            <h2>Fertilizer Summary</h2>
             <div class="summary-grid">
               <article>
                 <span>Base</span>
@@ -459,6 +462,6 @@
       </main>
     </div>
 
-    <script src="./app.js?v=26" defer></script>
+    <script src="./app.js?v=27" defer></script>
   </body>
 </html>
