@@ -1291,6 +1291,51 @@ main {
   line-height: 1.35;
 }
 
+.application-guide {
+  margin: 16px 0;
+}
+
+.application-guide h2 {
+  margin-bottom: 12px;
+}
+
+.application-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.application-grid article {
+  display: grid;
+  gap: 7px;
+  min-height: 152px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 253, 247, 0.92);
+  box-shadow: 0 8px 22px rgba(62, 55, 44, 0.08);
+}
+
+.application-grid span {
+  color: var(--clay);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.application-grid strong {
+  font-size: 1rem;
+  line-height: 1.16;
+}
+
+.application-grid p {
+  color: #435047;
+  font-size: 0.92rem;
+  font-weight: 650;
+  line-height: 1.36;
+}
+
 .fert-card {
   min-height: 190px;
   padding: 14px;
@@ -1350,6 +1395,7 @@ main {
 
   .summary-band,
   .action-triggers,
+  .application-grid,
   .crop-entry,
   .crop-recs,
   .feed-log-actions,
@@ -1445,6 +1491,7 @@ main {
 
   .detail-card,
   .action-triggers article,
+  .application-grid article,
   .crop-card,
   .crop-phase-panel,
   .feed-log,
@@ -1524,6 +1571,7 @@ main {
 
   .detail-card p,
   .action-triggers p,
+  .application-grid p,
   .crop-note,
   .crop-history-row p,
   .feed-log-card span,
