@@ -99,7 +99,7 @@ h2 {
   top: 0;
   z-index: 5;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 6px;
   padding: 7px;
   border: 1px solid var(--line);
@@ -577,6 +577,167 @@ main {
   margin-top: 18px;
 }
 
+.crop-tracker {
+  display: grid;
+  gap: 12px;
+}
+
+.crop-tracker-head {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  justify-content: space-between;
+}
+
+.crop-tracker-head h2 {
+  margin: 0;
+}
+
+.crop-tracker-list {
+  display: grid;
+  gap: 10px;
+}
+
+.crop-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 253, 247, 0.94);
+  box-shadow: 0 8px 22px rgba(62, 55, 44, 0.08);
+}
+
+.crop-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.crop-card h3 {
+  margin: 0;
+  font-size: 1.18rem;
+}
+
+.crop-group-pill {
+  padding: 6px 9px;
+  border-radius: 999px;
+  color: var(--leaf-dark);
+  background: var(--sage);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.crop-note {
+  margin: 0;
+  color: #435047;
+  font-size: 0.94rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.crop-recs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.crop-rec {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid rgba(47, 95, 70, 0.16);
+  border-radius: 8px;
+  background: rgba(217, 229, 210, 0.4);
+}
+
+.crop-rec strong {
+  font-size: 0.92rem;
+}
+
+.crop-rec span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 750;
+  line-height: 1.3;
+}
+
+.crop-entry {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.9fr) minmax(150px, 1fr) minmax(160px, 1fr);
+  gap: 8px;
+  align-items: end;
+}
+
+.crop-entry label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.crop-entry input,
+.crop-entry select,
+.crop-entry textarea {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 10px;
+  color: var(--ink);
+  background: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.crop-entry textarea {
+  grid-column: 1 / -1;
+  min-height: 72px;
+  resize: vertical;
+}
+
+.crop-entry button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 12px;
+  color: #ffffff;
+  background: var(--leaf);
+  font-weight: 900;
+}
+
+.crop-history {
+  display: grid;
+  gap: 6px;
+  padding-top: 2px;
+}
+
+.crop-history-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+
+.crop-history-row strong {
+  font-size: 0.86rem;
+}
+
+.crop-history-row p {
+  margin: 0;
+  color: #435047;
+  font-size: 0.88rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
 .feed-log {
   display: grid;
   gap: 12px;
@@ -863,6 +1024,8 @@ main {
 
   .summary-band,
   .action-triggers,
+  .crop-entry,
+  .crop-recs,
   .feed-log-actions,
   .feed-log-summary,
   .summary-grid,
@@ -888,6 +1051,14 @@ main {
 
   .veg-button {
     grid-template-columns: 28px 1fr;
+  }
+
+  .crop-entry textarea {
+    grid-column: auto;
+  }
+
+  .crop-history-row {
+    grid-template-columns: 1fr;
   }
 
   .my-fert-list dl div {
@@ -928,6 +1099,7 @@ main {
 
   .detail-card,
   .action-triggers article,
+  .crop-card,
   .feed-log,
   .feed-log-card,
   .fert-example,
@@ -971,6 +1143,9 @@ main {
   }
 
   .tabs,
+  .crop-entry input,
+  .crop-entry select,
+  .crop-entry textarea,
   .search-wrap input {
     background: #182019;
   }
@@ -983,8 +1158,14 @@ main {
     background: #243322;
   }
 
+  .crop-rec {
+    background: #243322;
+  }
+
   .detail-card p,
   .action-triggers p,
+  .crop-note,
+  .crop-history-row p,
   .feed-log-card span,
   .feed-log-recent,
   .fert-card p,

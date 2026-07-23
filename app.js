@@ -209,6 +209,7 @@ const fertilizerGuides = {
 
 const vegList = document.querySelector("#vegList");
 const fertList = document.querySelector("#fertList");
+const cropTracker = document.querySelector("#cropTracker");
 const alphaStrip = document.querySelector("#alphaStrip");
 const searchInput = document.querySelector("#search");
 const feedLogSummary = document.querySelector("#feedLogSummary");
@@ -218,6 +219,7 @@ const panels = [...document.querySelectorAll(".tab-panel")];
 
 const normalize = (value) => value.toLowerCase().trim();
 const FEED_LOG_KEY = "gardenFeedLogV1";
+const CROP_LOG_KEY = "gardenCropFeedLogV1";
 const feedProtocols = {
   tomatoTone: {
     label: "Tomato-tone",
@@ -240,6 +242,98 @@ const feedProtocols = {
     dose: "4 tsp per 2-gal jug"
   }
 };
+
+const cropPlans = [
+  {
+    id: "tomatoes",
+    name: "Tomatoes",
+    group: "Fruit-Fill Crops",
+    note: "Fruit-fill management: steady water, calcium transport, then K-supported ripening.",
+    products: [
+      { name: "Espoma Tomato-tone", rate: "3 tbsp in soil", timing: "Immediate soil top-dress" },
+      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" }
+    ]
+  },
+  {
+    id: "zucchini-squash",
+    name: "Zucchini & Squash",
+    group: "Cucurbits",
+    note: "Support reproductive growth, pollination access, and continued harvest pressure.",
+    products: [
+      { name: "Espoma Tomato-tone", rate: "3 tbsp in soil", timing: "Immediate soil top-dress" },
+      { name: "FoxFarm Tiger Bloom", rate: "4 tsp per 2-gal jug", timing: "Every 14 days during morning watering" }
+    ]
+  },
+  {
+    id: "celery",
+    name: "Celery",
+    group: "Greens & Stalks",
+    note: "Nitrogen plus constant moisture. Do not let the root zone dry down hard.",
+    products: [{ name: "Alaska Fish Fertilizer QT", rate: "4 tbsp per 2-gal jug", timing: "Weekly" }]
+  },
+  {
+    id: "kale",
+    name: "Kale",
+    group: "Greens & Stalks",
+    note: "Keep vegetative growth active; avoid drought stress and heat-triggered toughness.",
+    products: [{ name: "Alaska Fish Fertilizer QT", rate: "4 tbsp per 2-gal jug", timing: "Weekly" }]
+  },
+  {
+    id: "corn",
+    name: "Corn",
+    group: "Greens & Stalks",
+    note: "Grass-family nitrogen demand is high during rapid growth and ear fill.",
+    products: [{ name: "Alaska Fish Fertilizer QT", rate: "4 tbsp per 2-gal jug", timing: "Weekly" }]
+  },
+  {
+    id: "eggplant",
+    name: "Eggplant",
+    group: "Fruit-Fill Crops",
+    note: "Treat like tomato-style fruit-fill: steady moisture, calcium availability, late K emphasis.",
+    products: [
+      { name: "Espoma Tomato-tone", rate: "3 tbsp in soil", timing: "Immediate soil top-dress" },
+      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" }
+    ]
+  },
+  {
+    id: "strawberries",
+    name: "Strawberries",
+    group: "Fruit-Fill Crops",
+    note: "Light feeding only; avoid excess nitrogen that favors leaves/runners over berry quality.",
+    products: [
+      { name: "Espoma Tomato-tone", rate: "1.5 tbsp in soil", timing: "Immediate light soil top-dress" },
+      { name: "Farmer's Secret Tomato Booster", rate: "4 tsp per 2-gal jug", timing: "Every 10-14 days starting mid-August" }
+    ]
+  },
+  {
+    id: "leeks",
+    name: "Leeks",
+    group: "Roots & Storage Organs",
+    note: "Low-maintenance base fertility. Fish emulsion only as a light rescue if pale/stalled.",
+    products: [{ name: "Espoma Tomato-tone", rate: "1.5 tbsp in soil", timing: "Immediate single feed" }]
+  },
+  {
+    id: "horseradish",
+    name: "Horseradish",
+    group: "Roots & Storage Organs",
+    note: "Feed once and allow natural seasonal root build.",
+    products: [{ name: "Espoma Tomato-tone", rate: "1.5 tbsp in soil", timing: "Immediate single feed" }]
+  },
+  {
+    id: "herbs-leafy",
+    name: "Leafy Herbs",
+    group: "Herbs",
+    note: "For basil, parsley, cilantro, dill, mint, and chives. Use nitrogen lightly for leaf production.",
+    products: [{ name: "Alaska Fish Fertilizer QT", rate: "Half-strength", timing: "Every 3-4 weeks only if actively growing" }]
+  },
+  {
+    id: "herbs-woody",
+    name: "Woody Herbs",
+    group: "Herbs",
+    note: "Rosemary, thyme, oregano, sage, and lavender prefer leaner soil. Skip routine fish emulsion.",
+    products: [{ name: "No routine feed", rate: "Observe only", timing: "Feed only if genuinely pale/stalled" }]
+  }
+];
 
 function groupedVegetables(items) {
   return items
@@ -464,6 +558,139 @@ function undoLastFeedLog() {
   renderFeedLog();
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function readCropLog() {
+  try {
+    return JSON.parse(localStorage.getItem(CROP_LOG_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function writeCropLog(entries) {
+  localStorage.setItem(CROP_LOG_KEY, JSON.stringify(entries));
+}
+
+function renderCropTracker() {
+  if (!cropTracker) {
+    return;
+  }
+
+  const entries = readCropLog();
+  cropTracker.innerHTML = cropPlans
+    .map((crop) => {
+      const cropEntries = entries
+        .filter((entry) => entry.cropId === crop.id)
+        .sort((a, b) => b.timestamp - a.timestamp);
+      const latest = cropEntries[0];
+      const defaultProduct = crop.products[0];
+      const recs = crop.products
+        .map(
+          (product) => `
+            <article class="crop-rec">
+              <strong>${escapeHtml(product.name)}</strong>
+              <span>${escapeHtml(product.rate)}</span>
+              <span>${escapeHtml(product.timing)}</span>
+            </article>
+          `
+        )
+        .join("");
+      const options = crop.products
+        .map((product) => `<option value="${escapeHtml(product.name)}">${escapeHtml(product.name)}</option>`)
+        .join("");
+      const history = cropEntries.length
+        ? cropEntries
+            .slice(0, 4)
+            .map(
+              (entry) => `
+                <div class="crop-history-row">
+                  <strong>${formatFeedDate(entry.date)}</strong>
+                  <p>${escapeHtml(entry.product)} | ${escapeHtml(entry.amount)}${
+                    entry.note ? `<br>${escapeHtml(entry.note)}` : ""
+                  }</p>
+                </div>
+              `
+            )
+            .join("")
+        : `<div class="crop-history-row"><strong>Status</strong><p>No feedings logged for this crop yet.</p></div>`;
+
+      return `
+        <article class="crop-card" data-crop-id="${crop.id}">
+          <div class="crop-card-head">
+            <h3>${escapeHtml(crop.name)}</h3>
+            <span class="crop-group-pill">${escapeHtml(crop.group)}</span>
+          </div>
+          <p class="crop-note">${escapeHtml(crop.note)}</p>
+          <div class="crop-recs">${recs}</div>
+          <div class="crop-entry">
+            <label>
+              Date
+              <input type="date" data-crop-date value="${todayIso()}" />
+            </label>
+            <label>
+              Product
+              <select data-crop-product>${options}</select>
+            </label>
+            <label>
+              Amount
+              <input type="text" data-crop-amount value="${escapeHtml(defaultProduct.rate)}" />
+            </label>
+            <textarea data-crop-note placeholder="Notes: what looked dry, pale, flowering, fruiting, skipped, etc."></textarea>
+            <button type="button" data-crop-log>Log Feeding</button>
+          </div>
+          <div class="crop-history">
+            <span class="detail-label">Last fed: ${latest ? `${relativeFeedDate(latest.date)} (${formatFeedDate(latest.date)})` : "not logged"}</span>
+            ${history}
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function selectedCropProduct(crop, productName) {
+  return crop.products.find((product) => product.name === productName) || crop.products[0];
+}
+
+function logCropFeeding(card) {
+  const crop = cropPlans.find((item) => item.id === card.dataset.cropId);
+  if (!crop) {
+    return;
+  }
+
+  const product = card.querySelector("[data-crop-product]").value;
+  const amount = card.querySelector("[data-crop-amount]").value.trim();
+  const date = card.querySelector("[data-crop-date]").value || todayIso();
+  const note = card.querySelector("[data-crop-note]").value.trim();
+  const entries = readCropLog();
+  entries.push({
+    cropId: crop.id,
+    cropName: crop.name,
+    product,
+    amount,
+    date,
+    note,
+    timestamp: Date.now()
+  });
+  writeCropLog(entries);
+  renderCropTracker();
+}
+
+function undoLastCropLog() {
+  const entries = readCropLog();
+  entries.pop();
+  writeCropLog(entries);
+  renderCropTracker();
+}
+
 function setTab(nextTab) {
   tabs.forEach((tab) => {
     const isActive = tab.dataset.tab === nextTab;
@@ -506,6 +733,18 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  const cropLogButton = event.target.closest("[data-crop-log]");
+  if (cropLogButton) {
+    logCropFeeding(cropLogButton.closest(".crop-card"));
+    return;
+  }
+
+  const cropUndoButton = event.target.closest("[data-crop-undo]");
+  if (cropUndoButton) {
+    undoLastCropLog();
+    return;
+  }
+
   const vegButton = event.target.closest(".veg-button");
   if (vegButton) {
     const item = vegButton.closest(".veg-item");
@@ -514,11 +753,28 @@ document.addEventListener("click", (event) => {
   }
 });
 
+document.addEventListener("change", (event) => {
+  const select = event.target.closest("[data-crop-product]");
+  if (!select) {
+    return;
+  }
+
+  const card = select.closest(".crop-card");
+  const crop = cropPlans.find((item) => item.id === card.dataset.cropId);
+  if (!crop) {
+    return;
+  }
+
+  const product = selectedCropProduct(crop, select.value);
+  card.querySelector("[data-crop-amount]").value = product.rate;
+});
+
 searchInput.addEventListener("input", renderVegetables);
 
 renderVegetables();
 renderFertilizers();
 renderFeedLog();
+renderCropTracker();
 setTab(localStorage.getItem("gardenNotesTab") || "vegetables");
 
 if ("serviceWorker" in navigator) {

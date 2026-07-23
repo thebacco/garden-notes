@@ -9,7 +9,7 @@
     <title>Garden Notes</title>
     <link rel="apple-touch-icon" href="./icon-192.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=14" />
+    <link rel="stylesheet" href="./styles.css?v=15" />
   </head>
   <body>
     <div class="app-shell">
@@ -23,6 +23,7 @@
 
       <nav class="tabs" aria-label="Garden reference sections">
         <button class="tab is-active" type="button" data-tab="vegetables">Vegetables</button>
+        <button class="tab" type="button" data-tab="my-crops">My Crops</button>
         <button class="tab" type="button" data-tab="feed-chart">Feed Chart</button>
         <button class="tab" type="button" data-tab="my-fertilizers">When To Act</button>
         <button class="tab" type="button" data-tab="fertilizers">Fertilizers</button>
@@ -52,6 +53,19 @@
 
           <div class="alpha-strip" id="alphaStrip" aria-label="Jump by letter"></div>
           <div class="veg-list" id="vegList"></div>
+        </section>
+
+        <section class="tab-panel" id="my-crops" aria-labelledby="my-crops-tab">
+          <section class="crop-tracker">
+            <div class="crop-tracker-head">
+              <div>
+                <p class="eyebrow">Record what you did</p>
+                <h2>My Crops</h2>
+              </div>
+              <button class="ghost-button" type="button" data-crop-undo>Undo Last</button>
+            </div>
+            <div class="crop-tracker-list" id="cropTracker"></div>
+          </section>
         </section>
 
         <section class="tab-panel" id="feed-chart" aria-labelledby="feed-chart-tab">
@@ -223,35 +237,6 @@
         <section class="tab-panel" id="my-fertilizers" aria-labelledby="my-fertilizers-tab">
           <section class="my-ferts">
             <h2>Fertilizer Timeline & Triggers</h2>
-            <section class="feed-log" aria-labelledby="feed-log-title">
-              <div class="feed-log-head">
-                <div>
-                  <span class="detail-label">Device-local record</span>
-                  <h3 id="feed-log-title">Feed Log</h3>
-                </div>
-                <button class="ghost-button" type="button" data-feed-undo>Undo Last</button>
-              </div>
-              <div class="feed-log-actions" aria-label="Record today's feeding">
-                <button type="button" data-feed-log="tomatoTone">
-                  <strong>Tomato-tone</strong>
-                  <span>Base top-dress</span>
-                </button>
-                <button type="button" data-feed-log="fishEmulsion">
-                  <strong>Alaska Fish</strong>
-                  <span>Greens + corn</span>
-                </button>
-                <button type="button" data-feed-log="tigerBloom">
-                  <strong>Tiger Bloom</strong>
-                  <span>Squash + zucchini</span>
-                </button>
-                <button type="button" data-feed-log="farmersSecret">
-                  <strong>Farmer's Secret</strong>
-                  <span>Fruit finish</span>
-                </button>
-              </div>
-              <div class="feed-log-summary" id="feedLogSummary"></div>
-              <div class="feed-log-recent" id="feedLogRecent"></div>
-            </section>
             <div class="action-triggers">
               <article>
                 <span>If leaves need pushing</span>
@@ -467,6 +452,6 @@
       </main>
     </div>
 
-    <script src="./app.js?v=14" defer></script>
+    <script src="./app.js?v=15" defer></script>
   </body>
 </html>
