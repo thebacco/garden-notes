@@ -211,10 +211,35 @@ const vegList = document.querySelector("#vegList");
 const fertList = document.querySelector("#fertList");
 const alphaStrip = document.querySelector("#alphaStrip");
 const searchInput = document.querySelector("#search");
+const feedLogSummary = document.querySelector("#feedLogSummary");
+const feedLogRecent = document.querySelector("#feedLogRecent");
 const tabs = [...document.querySelectorAll(".tab")];
 const panels = [...document.querySelectorAll(".tab-panel")];
 
 const normalize = (value) => value.toLowerCase().trim();
+const FEED_LOG_KEY = "gardenFeedLogV1";
+const feedProtocols = {
+  tomatoTone: {
+    label: "Tomato-tone",
+    crops: "Tomatoes, zucchini, squash, eggplant, strawberries, leeks, horseradish",
+    dose: "3 tbsp large plants; 1.5 tbsp strawberries/leeks/horseradish"
+  },
+  fishEmulsion: {
+    label: "Alaska Fish",
+    crops: "Celery, kale, corn",
+    dose: "4 tbsp per 2-gal jug"
+  },
+  tigerBloom: {
+    label: "Tiger Bloom",
+    crops: "Zucchini, squash",
+    dose: "4 tsp per 2-gal jug"
+  },
+  farmersSecret: {
+    label: "Farmer's Secret",
+    crops: "Tomatoes, eggplant, strawberries",
+    dose: "4 tsp per 2-gal jug"
+  }
+};
 
 function groupedVegetables(items) {
   return items
@@ -336,6 +361,109 @@ function renderFertilizers() {
     .join("");
 }
 
+function readFeedLog() {
+  try {
+    return JSON.parse(localStorage.getItem(FEED_LOG_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function writeFeedLog(entries) {
+  localStorage.setItem(FEED_LOG_KEY, JSON.stringify(entries));
+}
+
+function todayIso() {
+  const now = new Date();
+  const offset = now.getTimezoneOffset() * 60000;
+  return new Date(now.getTime() - offset).toISOString().slice(0, 10);
+}
+
+function formatFeedDate(isoDate) {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+function relativeFeedDate(isoDate) {
+  const today = todayIso();
+  if (isoDate === today) {
+    return "Today";
+  }
+
+  const todayDate = new Date(`${today}T00:00:00`);
+  const feedDate = new Date(`${isoDate}T00:00:00`);
+  const days = Math.round((todayDate - feedDate) / 86400000);
+  if (days === 1) {
+    return "Yesterday";
+  }
+  if (days > 1) {
+    return `${days} days ago`;
+  }
+  return formatFeedDate(isoDate);
+}
+
+function renderFeedLog() {
+  if (!feedLogSummary || !feedLogRecent) {
+    return;
+  }
+
+  const entries = readFeedLog();
+  const latestByProtocol = entries.reduce((latest, entry) => {
+    if (!latest[entry.id] || entry.timestamp > latest[entry.id].timestamp) {
+      latest[entry.id] = entry;
+    }
+    return latest;
+  }, {});
+
+  feedLogSummary.innerHTML = Object.entries(feedProtocols)
+    .map(([id, protocol]) => {
+      const latest = latestByProtocol[id];
+      const status = latest ? `${relativeFeedDate(latest.date)} (${formatFeedDate(latest.date)})` : "Not logged yet";
+      return `
+        <article class="feed-log-card">
+          <strong>${protocol.label}</strong>
+          <span>${status}</span>
+          <span>${protocol.crops}</span>
+        </article>
+      `;
+    })
+    .join("");
+
+  const recent = entries.slice(-3).reverse();
+  feedLogRecent.textContent = recent.length
+    ? `Recent: ${recent
+        .map((entry) => `${feedProtocols[entry.id]?.label || "Feed"} on ${formatFeedDate(entry.date)}`)
+        .join(" | ")}`
+    : "No feedings logged yet. Tap a product above after you apply it.";
+}
+
+function logFeed(protocolId) {
+  const protocol = feedProtocols[protocolId];
+  if (!protocol) {
+    return;
+  }
+
+  const entries = readFeedLog();
+  entries.push({
+    id: protocolId,
+    label: protocol.label,
+    crops: protocol.crops,
+    dose: protocol.dose,
+    date: todayIso(),
+    timestamp: Date.now()
+  });
+  writeFeedLog(entries);
+  renderFeedLog();
+}
+
+function undoLastFeedLog() {
+  const entries = readFeedLog();
+  entries.pop();
+  writeFeedLog(entries);
+  renderFeedLog();
+}
+
 function setTab(nextTab) {
   tabs.forEach((tab) => {
     const isActive = tab.dataset.tab === nextTab;
@@ -366,6 +494,18 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  const feedButton = event.target.closest("[data-feed-log]");
+  if (feedButton) {
+    logFeed(feedButton.dataset.feedLog);
+    return;
+  }
+
+  const undoButton = event.target.closest("[data-feed-undo]");
+  if (undoButton) {
+    undoLastFeedLog();
+    return;
+  }
+
   const vegButton = event.target.closest(".veg-button");
   if (vegButton) {
     const item = vegButton.closest(".veg-item");
@@ -378,6 +518,7 @@ searchInput.addEventListener("input", renderVegetables);
 
 renderVegetables();
 renderFertilizers();
+renderFeedLog();
 setTab(localStorage.getItem("gardenNotesTab") || "vegetables");
 
 if ("serviceWorker" in navigator) {
